@@ -433,6 +433,10 @@ public class CharacterThing : GameThing
             animator.runtimeAnimatorController = null;
             animator.runtimeAnimatorController = animatorController;
         }
+
+        // Set the speed of the movement controller
+        if (movementController != null)
+            movementController.movementSpeed = variables.GetVariable("speed");
     }
 
     // Method to convert the character to a JSON string

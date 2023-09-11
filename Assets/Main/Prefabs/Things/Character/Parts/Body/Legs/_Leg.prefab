@@ -57,7 +57,9 @@ MonoBehaviour:
     disableWhenInInventory: 0
     thingType: 
   variables:
-    variables: []
+    variables:
+    - name: speed
+      value: 2
   _renderers:
   - {fileID: 0}
   _redColor: {r: 0.54, g: 0.28197, b: 0.2106, a: 1}

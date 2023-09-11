@@ -50,14 +50,15 @@ public class GameplayCamera : MonoBehaviour
     }
 
     /// <summary>
-    /// This function is called every fixed framerate frame, if the MonoBehaviour is enabled.
+    /// LateUpdate is called every frame, if the Behaviour is enabled.
+    /// It is called after all Update functions have been called.
     /// </summary>
-    void FixedUpdate()
+    void LateUpdate()
     {
         if (rotationAmount != Vector3.zero)
         {
-            rotation.x += rotationAmount.x;
-            rotation.y += rotationAmount.y;
+            rotation.x += rotationAmount.x * Time.deltaTime;
+            rotation.y += rotationAmount.y * Time.deltaTime;
 
             rotation.x = Mathf.Clamp(rotation.x, rotationLimits.x, rotationLimits.y);
 

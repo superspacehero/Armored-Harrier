@@ -413,7 +413,7 @@ MonoBehaviour:
   cameraObject: {fileID: 0}
   cameraOffset: {x: 0, y: 0, z: -3}
   cameraRotation: {x: 0, y: 0, z: 0}
-  cameraSensitivity: 3
+  cameraSensitivity: 180
   rotationLimits: {x: -60, y: 60}
 --- !u!1 &5061016846897795855
 GameObject:
@@ -484,9 +484,7 @@ MonoBehaviour:
     disableWhenInInventory: 0
     thingType: 
   variables:
-    variables:
-    - name: attack
-      value: 1
+    variables: []
   _renderers: []
   _redColor: {r: 1, g: 1, b: 1, a: 1}
   _greenColor: {r: 1, g: 1, b: 1, a: 1}
@@ -529,7 +527,7 @@ MonoBehaviour:
     variables:
     - name: health
       value: 10
-    - name: movement
+    - name: speed
       value: 2
   characterBase:
     thing: {fileID: 0}
@@ -550,9 +548,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentVerticalSpeed: 0
   movementSpeed: 4
-  defaultJumpHeight: 8
+  defaultJumpHeight: 4
   jumpOffset: 0.15
-  gravity: 50
+  gravity: 25
   cameraTransform: {fileID: 0}
   canControl: 2
   canMove: 1
@@ -576,11 +574,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d98ace8715c2a184ca85247b18eb0853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepHeightRatio: 0.25
+  stepHeightRatio: 0.1
   colliderHeight: 2
   colliderThickness: 1
-  colliderOffset: {x: 0, y: 0.5, z: 0}
-  sensorType: 2
+  colliderOffset: {x: 0, y: 0.45, z: 0}
+  sensorType: 1
   isInDebugMode: 0
   sensorArrayRows: 1
   sensorArrayRayCount: 6
@@ -625,9 +623,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 1.5
+  m_Height: 1.8
   m_Direction: 1
-  m_Center: {x: 0, y: 1.25, z: 0}
+  m_Center: {x: 0, y: 1.1, z: 0}
 --- !u!54 &6148178466628878785
 Rigidbody:
   m_ObjectHideFlags: 0

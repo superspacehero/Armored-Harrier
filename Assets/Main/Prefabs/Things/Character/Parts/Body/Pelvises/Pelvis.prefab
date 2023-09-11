@@ -151,6 +151,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4718474772700643349, guid: 12455128928d448eba9df575e8e031ab,
         type: 3}
+    - target: {fileID: 5017976717476840448, guid: 12455128928d448eba9df575e8e031ab,
+        type: 3}
+      propertyPath: m_Height
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5017976717476840448, guid: 12455128928d448eba9df575e8e031ab,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7035756595655136296, guid: 12455128928d448eba9df575e8e031ab,
         type: 3}
       propertyPath: m_RootOrder
