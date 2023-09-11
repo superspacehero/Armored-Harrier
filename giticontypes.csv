@@ -1,0 +1,20 @@
+access|♿|Improvement for accessibility
+api|❗|API addition, deprecation, or deletion
+git|🙈|A change to the .gitignore / .gitkeep files, or other git changes
+convenience|🏃|Scripts to speed up development
+hotfix|🚨|Critical hotfix
+i18n|🌐|Internationalization and localization
+init|🎉|The first commit of a new project or feature
+texture|🖼️|Images for textures
+sprite|👾|Images for sprites
+model|🗿|3D models
+shader|🌌|Shaders for materials
+sfx|🔊|Sound effects
+music|🎵|Music
+vfx|🎆|Visual effects
+ui|📱|User interface
+camera|🎥|Camera-related changes
+terrain|🗻|Terrain-related changes
+character|👤|Character-related changes
+ai|🤖|Artificial intelligence
+physics|🍃|Physics-related changes
