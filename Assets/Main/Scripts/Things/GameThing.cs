@@ -20,16 +20,11 @@ public class GameThing : MonoBehaviour
     // At their core, their primary function is to be used,
     // which is handled by the Use() function.
 
-    protected void SetMaxHealth()
-    {
-        if (variables.GetVariable("health") > 0 && variables.GetVariable("maxHealth") <= 0)
-            variables.SetVariable("maxHealth", variables.GetVariable("health"));
-    }
-
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        SetMaxHealth();
+        maxHealth = variables.GetVariable("health");
+        health = maxHealth;
     }
 
     /// <summary>
@@ -320,6 +315,38 @@ public class GameThing : MonoBehaviour
     private Transform _thingTop;
 
     public GameThingVariables variables = new GameThingVariables();
+
+    // The character's health
+    public float health
+    {
+        get
+        {
+            return _health;
+        }
+
+        set
+        {
+            _health = value;
+            if (_health <= 0f && maxHealth > 0f)
+            {
+                _health = 0f;
+                Die();
+            }
+            else if (_health >= maxHealth)
+            {
+                _health = maxHealth;
+            }
+        }
+    }
+    [SerializeField] private float _health;
+    protected float maxHealth = 100f;
+
+    // Method to kill the character
+    public virtual void Die()
+    {
+        Debug.Log($"{name} died.");
+        Destroy(gameObject);
+    }
 
     [System.Serializable]
     public class GameThingVariables

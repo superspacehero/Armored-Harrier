@@ -23,6 +23,37 @@ public class CharacterThing : GameThing
     // The list of character parts
     public CharacterPartList characterPartList;
 
+    // The character's energy
+    public float energy
+    {
+        get
+        {
+            return _energy;
+        }
+
+        set
+        {
+            _energy = value;
+            if (_energy <= 0f)
+            {
+                _energy = 0f;
+                canUseEnergy = false;
+            }
+            else if (_energy >= maxEnergy)
+            {
+                _energy = maxEnergy;
+                canUseEnergy = true;
+            }
+
+            onEnergyChanged?.Invoke(_energy);
+        }
+    }
+    private float _energy;
+    public float maxEnergy = 100f;
+    public bool canUseEnergy { get; private set; } = true;
+    public float energyConsumptionRate = 0f;
+    public System.Action<float> onEnergyChanged;
+
     public struct CharacterInfo
     {
         public string name, portrait;
@@ -457,6 +488,10 @@ public class CharacterThing : GameThing
         // Set the speed of the movement controller
         if (movementController != null)
             movementController.movementSpeed = variables.GetVariable("speed");
+
+        // Set the energy of the character
+        maxEnergy = variables.GetVariable("energy");
+        energy = maxEnergy;
     }
 
     // Method to convert the character to a JSON string
