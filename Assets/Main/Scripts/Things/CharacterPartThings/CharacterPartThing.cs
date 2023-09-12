@@ -19,9 +19,8 @@ public class CharacterPartThing : UnsavedThing
     public struct CharacterPartInfo
     {
         public string prefabName;
-        public Color redColor;
-        public Color greenColor;
-        public Color blueColor;
+        [ColorUsage(false)]
+        public Color redColor, greenColor, blueColor;
 
         public override string ToString()
         {

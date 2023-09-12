@@ -513,7 +513,7 @@ public class GameThing : MonoBehaviour
         }
     }
 
-    [SerializeField]
+    [SerializeField, ColorUsage(false)]
     private Color _redColor = Color.white, _greenColor = Color.white, _blueColor = Color.white;
 
     /// <summary>
@@ -623,6 +623,20 @@ public class GameThing : MonoBehaviour
     {
         if (GetAttachedThing() != null)
             GetAttachedThing().Aim(direction);
+    }
+
+    // Left trigger input
+    public virtual void LeftTriggerAction(bool pressed)
+    {
+        if (GetAttachedThing() != null)
+            GetAttachedThing().LeftTriggerAction(pressed);
+    }
+
+    // Right trigger input
+    public virtual void RightTriggerAction(bool pressed)
+    {
+        if (GetAttachedThing() != null)
+            GetAttachedThing().RightTriggerAction(pressed);
     }
 
     // Primary input

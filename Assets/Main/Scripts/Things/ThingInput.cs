@@ -174,6 +174,34 @@ public class ThingInput : UnsavedThing
     }
     private Vector2 _aim;
 
+    public bool leftTriggerAction
+    {
+        get => _leftTriggerAction;
+        set
+        {
+            _leftTriggerAction = value;
+
+            foreach (Inventory.ThingSlot slot in inventory.thingSlots)
+                if (slot.thing)
+                    slot.thing.LeftTriggerAction(_leftTriggerAction);
+        }
+    }
+    private bool _leftTriggerAction;
+
+    public bool rightTriggerAction
+    {
+        get => _rightTriggerAction;
+        set
+        {
+            _rightTriggerAction = value;
+
+            foreach (Inventory.ThingSlot slot in inventory.thingSlots)
+                if (slot.thing)
+                    slot.thing.RightTriggerAction(_rightTriggerAction);
+        }
+    }
+    private bool _rightTriggerAction;
+
     public bool primaryAction
     {
         get => _primaryAction;
@@ -313,6 +341,16 @@ public class ThingInput : UnsavedThing
     public void OnButtonRight(InputValue value)
     {
         rightAction = value.isPressed;
+    }
+
+    public void OnTriggerLeft(InputValue value)
+    {
+        leftTriggerAction = value.isPressed;
+    }
+
+    public void OnTriggerRight(InputValue value)
+    {
+        rightTriggerAction = value.isPressed;
     }
 
     public void OnPause(InputValue value)

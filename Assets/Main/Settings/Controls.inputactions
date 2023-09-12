@@ -78,6 +78,24 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "TriggerLeft",
+                    "type": "Button",
+                    "id": "cc484815-ef5b-425c-86cd-14157c78e956",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TriggerRight",
+                    "type": "Button",
+                    "id": "98c56262-a17a-4ab7-b3ad-dbb8f9c81344",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Pause",
                     "type": "Button",
                     "id": "2ccdb1b8-82b1-4da1-bb09-a1647db86640",
@@ -435,6 +453,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1230c1b-2342-41ff-b2c7-1d484991a156",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "TriggerLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d0a9d0e6-7997-40ab-96fa-6dcbcca5b606",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "TriggerLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "745c51e7-0010-4248-85d0-e94db99fe3f4",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "TriggerRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "377eb4c7-dbaa-4fef-ab03-ae4aa54150a8",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "TriggerRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

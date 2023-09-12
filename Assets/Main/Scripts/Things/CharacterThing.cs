@@ -301,6 +301,26 @@ public class CharacterThing : GameThing
         base.RightAction(pressed);
     }
 
+    // Method to perform left trigger action on character
+    public override void LeftTriggerAction(bool pressed)
+    {
+        if (!(movementController.canControl > 0 && interaction != null && interaction.canInteract))
+        {
+        }
+
+        base.LeftTriggerAction(pressed);
+    }
+
+    // Method to perform right trigger action on character
+    public override void RightTriggerAction(bool pressed)
+    {
+        if (!(movementController.canControl > 0 && interaction != null && interaction.canInteract))
+        {
+        }
+
+        base.RightTriggerAction(pressed);
+    }
+
     // Method to pause the game
     public void Pause()
     {
