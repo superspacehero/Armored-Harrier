@@ -1,6 +1,8 @@
 Type,Icon,Description
 access,♿,"Improvement for accessibility"
+config,🔧,"Change to build configs, scripts, or external dependencies"
 git,🙈,"A change to the .gitignore / .gitkeep files, or other git changes"
+merge,🔀,"Merging branches"
 convenience,🏃,"Scripts to speed up development"
 i18n,🌐,"Internationalization and localization"
 ---

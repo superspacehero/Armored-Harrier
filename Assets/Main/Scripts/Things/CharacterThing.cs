@@ -54,6 +54,17 @@ public class CharacterThing : GameThing
     public float energyConsumptionRate = 0f;
     public System.Action<float> onEnergyChanged;
 
+    /// <summary>
+    /// This function is called every fixed framerate frame, if the MonoBehaviour is enabled.
+    /// </summary>
+    void FixedUpdate()
+    {
+        if (energyConsumptionRate > 0f)
+            energy -= energyConsumptionRate * Time.fixedDeltaTime;
+        else if (energy < maxEnergy)
+            energy += -energyConsumptionRate * Time.fixedDeltaTime;
+    }
+
     public struct CharacterInfo
     {
         public string name, portrait;

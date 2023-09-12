@@ -297,7 +297,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 16, y: -48}
+  m_SizeDelta: {x: 16, y: -64}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &1352373718003918435
 CanvasRenderer:
@@ -934,7 +934,7 @@ MonoBehaviour:
   thingPortrait: {fileID: 0}
   characterPartList: {fileID: 11400000, guid: b777c992050d4479c9d968363883674a, type: 2}
   maxEnergy: 100
-  canUseEnergy: 1
+  energyConsumptionRate: 0
   characterTeam: 0
   characterParts:
   - prefabName: Pelvis
