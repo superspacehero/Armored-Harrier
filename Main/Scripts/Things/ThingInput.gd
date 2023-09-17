@@ -19,12 +19,16 @@ var move_action: Vector2 = Vector2.ZERO:
 		if value != move_action:
 			for game_thing in inventory:
 				game_thing.move(value)
+	get:
+		return move_action
 
 var aim_action: Vector2 = Vector2.ZERO:
 	set(value):
 		if value != aim_action:
 			for game_thing in inventory:
 				game_thing.aim(value)
+	get:
+		return aim_action
 
 var left_trigger_action: bool = false:
 	set(value):
@@ -72,23 +76,31 @@ func process_input_event(action: String, value):
 	match action:
 		"move_up":
 			move_action.y = -value
+			move_action = move_action
 		"move_down":
 			move_action.y = value
+			move_action = move_action
 		"move_left":
 			move_action.x = -value
+			move_action = move_action
 		"move_right":
 			move_action.x = value
+			move_action = move_action
 
 		"mouse_motion":
 			aim_action = Vector2(value.y, value.x)
 		"aim_up":
-			aim_action.y = -value
-		"aim_down":
-			aim_action.y = value
-		"aim_left":
 			aim_action.x = -value
-		"aim_right":
+			aim_action = aim_action
+		"aim_down":
 			aim_action.x = value
+			aim_action = aim_action
+		"aim_left":
+			aim_action.y = -value
+			aim_action = aim_action
+		"aim_right":
+			aim_action.y = value
+			aim_action = aim_action
 
 		"left_trigger":
 			left_trigger_action = value > 0.5 # if value is more than halfway pressed, assume true

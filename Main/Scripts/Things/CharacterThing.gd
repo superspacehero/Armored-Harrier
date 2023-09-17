@@ -37,7 +37,10 @@ var energy_consumption_rate : float
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _physics_process(delta):
+	character_body.velocity.x = velocity.x
 	character_body.velocity.y -= gravity * delta
+	character_body.velocity.z = velocity.z
+
 	character_body.move_and_slide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -48,17 +51,19 @@ func _process(delta):
 	elif energy < max_energy:
 		energy += energy_consumption_rate * delta
 
+var velocity : Vector3 = Vector3.ZERO
+
 func move(direction):
 	# Normalize the direction to ensure constant speed.
 	direction = direction.normalized()
 	
-	character_body.velocity.x = direction * character_speed
-	character_body.velocity.z = direction * character_speed
+	velocity.x = direction.x * character_speed
+	velocity.z = direction.y * character_speed
 	
 	print("move: " + str(direction))
 
 func aim(direction):
-	gameplay_camera.rotate_camera(direction)
+	gameplay_camera.camera_rotation_amount = direction
 	
 func primary(pressed):
 	pass

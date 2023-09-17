@@ -14,7 +14,7 @@ func _ready():
 			# print("Node added to inventory: ", node)
 		else:
 			printerr("Node at path %s is not a GameThing!" % path)
-	print("Final Inventory:", inventory)
+	# print("Final Inventory:", inventory)
 
 # Variables
 var thingName : String
@@ -28,7 +28,7 @@ var thing_top: Node3D = null:
 		if _thing_top == null:
 			_thing_top = find_child("Top", true, true)
 		if _thing_top == null:
-			print("No thing_top found for", name, ". Setting to transform.")
+			# print("No thing_top found for", name, ". Setting to transform.")
 			_thing_top = self
 		return _thing_top
 var _thing_top: Node

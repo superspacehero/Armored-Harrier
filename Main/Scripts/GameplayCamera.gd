@@ -3,8 +3,9 @@ class_name GameplayCamera
 
 # Camera Variables
 @export var camera_adjust_time = 0.25
-@export var camera_sensitivity = 0.1
+@export var camera_sensitivity = 1
 
+var camera_rotation_amount: Vector2 = Vector2.ZERO
 @export var camera_offset = Vector3(0, 0, 7)
 @export var camera_rotation = Vector3(22.5, 0, 0)
 @export var rotation_limits = Vector2(-60, 60)
@@ -24,6 +25,10 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _process(delta):
+	if camera_rotation_amount.length() > 0:
+		camera_rotation_amount = camera_rotation_amount.normalized()
+		rotate_camera(camera_rotation_amount)
+
 	if interpolating:
 		center_camera_interpolation(delta)
 
