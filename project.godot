@@ -115,3 +115,10 @@ pause={
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":6,"pressure":0.0,"pressed":false,"script":null)
 ]
 }
+
+[shader_globals]
+
+precision_multiplier={
+"type": "float",
+"value": 0.01
+}

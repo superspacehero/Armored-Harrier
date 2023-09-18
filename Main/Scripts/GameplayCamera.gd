@@ -26,7 +26,8 @@ func _ready():
 
 func _process(delta):
 	if camera_rotation_amount.length() > 0:
-		camera_rotation_amount = camera_rotation_amount.normalized()
+		if (camera_rotation_amount.length() > 1):
+			camera_rotation_amount = camera_rotation_amount.normalized()
 		rotate_camera(camera_rotation_amount)
 
 	if interpolating:

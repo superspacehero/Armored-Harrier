@@ -7,19 +7,25 @@ class_name CharacterThing
 @export var gameplay_camera : GameplayCamera
 @export var character_base : Node3D = null
 
-@export var character_speed : float = 4  # The speed at which the character moves.
+@export_category("Movement")
+@export var character_speed : float = 8  # The speed at which the character moves.
 @export var jump_height: float = 1  # The height of the character's jump.
 @export var jump_offset: float = 0.15  # The offset of the character's jump.
+@export var gravity: float = 100  # The gravity of the character.
+
+@onready var jump_full_height: float = jump_height + jump_offset
+@onready var jump_velocity: float = sqrt(2 * gravity * jump_full_height)
 
 enum control_level { NONE, MOVEMENT_ONLY, FULL }
 @export var can_control: control_level = control_level.FULL
 @export var can_move: bool = true
 @export var can_jump: bool = true
-@export var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+# @onready var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 enum movement_rotation_behavior { NONE, FULL_ROTATION, LEFT_RIGHT_ROTATION, TOWARDS_CAMERA }
 @export var rotation_behavior = movement_rotation_behavior.TOWARDS_CAMERA
 
+@export_category("Energy")
 @export var max_energy : float = 100
 @export var energy_bar : ProgressBar
 
@@ -62,21 +68,26 @@ func _ready():
 	
 	rotate_base(Vector3.FORWARD if rotation_behavior != movement_rotation_behavior.LEFT_RIGHT_ROTATION else Vector3.RIGHT)
 
-func _physics_process(_delta):
-	velocity = calculate_movement_direction() * character_speed
+func _physics_process(delta):
+	var movement = calculate_movement_direction() * character_speed
+	velocity.x = movement.x
+	velocity.z = movement.z
 
 	if character_body.is_on_floor():
-		velocity.y = 0
-		if can_control != control_level.NONE and can_jump and jump_input and !is_jumping:
-			velocity.y = sqrt(2 * gravity * (jump_height + jump_offset))
-			is_jumping = true
-			print("Jumping")
-	else:
-		velocity.y -= gravity
+		if !jump_input:
+			is_jumping = false
 
-	character_body.velocity = velocity
+		if can_control != control_level.NONE and can_jump and jump_input and !is_jumping:
+			velocity.y = jump_velocity
+			is_jumping = true
+		elif velocity.y < 0:
+			velocity.y = 0
+	else:
+		velocity.y -= gravity * delta
 	
 	character_body.move_and_slide()
+
+	character_body.velocity = velocity
 
 func _process(delta):
 	if can_use_energy:
@@ -87,7 +98,7 @@ func _process(delta):
 		
 	rotate_towards_goto_rotation(delta)
 
-# 3. Custom Functions
+# 3. Movement Functions
 
 func calculate_movement_direction() -> Vector3:
 	var direction = Vector3.ZERO
@@ -114,7 +125,7 @@ func rotate_base(direction: Vector3):
 		movement_rotation_behavior.LEFT_RIGHT_ROTATION:
 			if direction.x != 0:
 				direction.x = sign(direction.x)
-				
+
 			direction = round(direction)
 			
 			if direction.x == 0:
@@ -123,7 +134,7 @@ func rotate_base(direction: Vector3):
 			direction.z *= 0.5
 		movement_rotation_behavior.TOWARDS_CAMERA:
 			direction = -gameplay_camera.basis.z
-			
+
 	rotation_direction = direction
 	goto_rotation = atan2(rotation_direction.x, rotation_direction.z)
 	# print("goto_rotation: " + str(rad_to_deg(goto_rotation)))
@@ -135,7 +146,8 @@ func rotate_towards_goto_rotation(delta):
 
 func move(direction):
 	# Normalize the direction to ensure constant speed.
-	direction = direction.normalized()
+	if direction.length() > 1:
+		direction = direction.normalized()
 	
 	movement.x = direction.x
 	movement.z = direction.y
@@ -165,3 +177,9 @@ func right_trigger(_pressed):
 
 func pause(_pressed):
 	pass
+
+# 5. Character Assembly Variables
+
+@export_category("Character Assembly")
+@export var character_parts: Array = [PackedScene]
+
