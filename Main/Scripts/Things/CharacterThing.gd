@@ -67,17 +67,16 @@ func _physics_process(_delta):
 
 	if character_body.is_on_floor():
 		velocity.y = 0
+		if can_control != control_level.NONE and can_jump and jump_input and !is_jumping:
+			velocity.y = sqrt(2 * gravity * (jump_height + jump_offset))
+			is_jumping = true
+			print("Jumping")
 	else:
 		velocity.y -= gravity
 
 	character_body.velocity = velocity
 	
 	character_body.move_and_slide()
-	
-	if character_body.is_on_floor() and can_control != control_level.NONE and can_jump and jump_input and !is_jumping:
-		velocity.y = sqrt(2 * gravity * (jump_height + jump_offset))
-		is_jumping = true
-		print("Jumping")
 
 func _process(delta):
 	if can_use_energy:
