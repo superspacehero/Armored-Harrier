@@ -53,10 +53,6 @@ func die():
 	# Destroy self
 	queue_free()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
 func move(direction):
 	print("Moving in direction: ", direction)
 	pass

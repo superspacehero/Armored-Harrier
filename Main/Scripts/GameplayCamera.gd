@@ -42,15 +42,14 @@ func rotate_camera(relative: Vector2):
 
 # Set the camera's attachment to a GameThing object
 func set_camera_object(game_thing: GameThing, camera_height: float = 0.5, immediate: bool = false):
-	camera_object = game_thing
-	if self.get_parent() != camera_object:
-		self.get_parent().add_child(self)
-	self.owner = game_thing
-	start_position = self.global_transform.origin
-	target_position = lerp(game_thing.global_transform.origin, game_thing.thing_top.global_transform.origin, camera_height)
+	# if self.get_parent() != game_thing:
+	#	game_thing.add_child(self)
+	# self.owner = game_thing
+	start_position = self.global_position
+	target_position = lerp(game_thing.global_position, game_thing.thing_top.global_position, camera_height)
 
 	if immediate:
-		self.global_transform.origin = target_position
+		self.global_position = target_position
 		elapsed_time = camera_adjust_time
 	else:
 		elapsed_time = 0.0
@@ -61,8 +60,8 @@ func center_camera_interpolation(delta):
 	elapsed_time += delta
 	if elapsed_time < camera_adjust_time:
 		var ratio = elapsed_time / camera_adjust_time
-		self.global_transform.origin = start_position.lerp(target_position, ratio)
+		self.global_position = start_position.lerp(target_position, ratio)
 		# Additional logic to interpolate the rotation if needed
 	else:
 		interpolating = false
-		self.global_transform.origin = target_position
+		self.global_position = target_position

@@ -3,12 +3,6 @@ class_name InputManager
 
 static var instance: InputManager = null
 
-# This dictionary will store ThingInput nodes by device type and device_id
-var registered_inputs: Dictionary = {
-	"Keyboard": {},
-	"Gamepad": {}
-}
-
 # Resource to instantiate when a new device is detected
 @export var thing_input_prefab: PackedScene = null
 
@@ -21,69 +15,49 @@ var allowed_actions: Array = [
 	"pause"
 ]
 
+var connected_devices: Array[int]
+
 func _ready():
 	if not instance:
 		instance = self
 
-func _input(event):
-	var device_type = ""
-	var device_id = 0
+func is_device_joined(device: int) -> bool:
+	# We have to do this in a different way from find, as find will return -1 if the device is not found
+	var has_device = connected_devices.has(device)
+	# print("Device " + str(device) + " joined: " + str(has_device))
+	return has_device
 
-	# Check if the event corresponds to any of our defined actions
-	var matched_action = ""
-	for action in allowed_actions:
-		if event.is_action(action):
-			matched_action = action
-			break
+func unjoined_devices():
+	var valid_devices = Input.get_connected_joypads()
+	if !is_device_joined(-1):
+		valid_devices.append(-1) # also consider the keyboard player (device -1 for MultiplayerInput functions)
+	valid_devices = valid_devices.filter(func(device): return not is_device_joined(device))
+	# print("Valid devices: " + str(valid_devices))
+	return valid_devices
 
-	if event is InputEventMouseMotion:
-		matched_action = "mouse_motion"
-
-	# If no action matches, exit early
-	if matched_action == "":
-		return
-
-	if event is InputEventKey or event is InputEventMouseButton or event is InputEventMouseMotion:
-		device_type = "Keyboard"
-		device_id = 0 # Let's assume all keyboards are 0, as typically you don't have multiple keyboards
-
-	elif event is InputEventJoypadButton or event is InputEventJoypadMotion:
-		device_type = "Gamepad"
-		device_id = event.device
-
-	if device_type in registered_inputs:
-		if device_id in registered_inputs[device_type]:
-			var target_thing_input = registered_inputs[device_type][device_id]
-
-			var value = 0
-			if event is InputEventMouseMotion:  # Checking if the event is a mouse motion event
-				value = event.relative  # For mouse motion inputs
-			elif event.is_action_pressed(matched_action):
-				value = 1
-			elif event is InputEventJoypadMotion:  # Checking if the event is an analog motion event
-				if event.is_action(matched_action):
-					value = event.axis_value  # For analog joystick inputs
-			
-			target_thing_input.process_input_event(matched_action, value)
-		else:
+func _process(_delta):
+	for device in unjoined_devices():
+		if MultiplayerInput.is_action_just_pressed(device, "primary"):
 			# New device detected! Instantiate and register.
-			if thing_input_prefab:
-				var new_instance = thing_input_prefab.instantiate() 
-				self.add_child(new_instance)
+			register_thing_input(device)
+		# else:
+		# 	print("Device " + str(device) + " not joined yet.")
 
-				# Search for ThingInput in the children
-				var new_thing_input = new_instance.find_child("Input", true, false)
-				if new_thing_input:
-					new_thing_input.device_type = device_type
-					new_thing_input.device_id = device_id
-					register_thing_input(new_thing_input, device_type, device_id)
+func register_thing_input(device_id: int = -1):
+	if thing_input_prefab:
+		var new_instance = thing_input_prefab.instantiate() 
+		self.add_child(new_instance)
 
-func register_thing_input(thing_input, device_type: String, device_id: int = 0):
-	if device_type not in registered_inputs:
-		registered_inputs[device_type] = {}
-	
-	registered_inputs[device_type][device_id] = thing_input
+		# Search for ThingInput in the children
+		var new_thing_input = new_instance.find_child("Input", true, false)
+		if new_thing_input:
+			new_thing_input.device_id = device_id
+			new_thing_input.input = DeviceInput.new(device_id)
 
-func unregister_thing_input(device_type: String, device_id: int = 0):
-	if device_type in registered_inputs and device_id in registered_inputs[device_type]:
-		registered_inputs[device_type].erase(device_id)
+		# Register the device
+		connected_devices.append(device_id)
+
+	# print("Registered device: " + str(device_id))
+
+func unregister_thing_input(device_id: int = -1):
+	connected_devices.erase(device_id)
