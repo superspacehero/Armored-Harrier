@@ -53,30 +53,29 @@ func die():
 	# Destroy self
 	queue_free()
 
-func move(direction):
-	print("Moving in direction: ", direction)
+func move(_direction):
 	pass
 
-func aim(direction):
+func aim(_direction):
 	pass
 	
-func primary(pressed):
+func primary(_pressed):
 	pass
 
-func secondary(pressed):
+func secondary(_pressed):
 	pass
 
-func tertiary(pressed):
+func tertiary(_pressed):
 	pass
 
-func quaternary(pressed):
+func quaternary(_pressed):
 	pass
 
-func left_trigger(pressed):
+func left_trigger(_pressed):
 	pass
 
-func right_trigger(pressed):
+func right_trigger(_pressed):
 	pass
 
-func pause(pressed):
+func pause(_pressed):
 	pass

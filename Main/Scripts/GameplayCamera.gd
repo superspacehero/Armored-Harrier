@@ -3,7 +3,7 @@ class_name GameplayCamera
 
 # Camera Variables
 @export var camera_adjust_time = 0.25
-@export var camera_sensitivity = 1
+@export var camera_sensitivity = 1.5
 
 var camera_rotation_amount: Vector2 = Vector2.ZERO
 @export var camera_offset = Vector3(0, 0, 7)

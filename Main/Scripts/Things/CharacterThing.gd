@@ -62,7 +62,7 @@ func _ready():
 	
 	rotate_base(Vector3.FORWARD if rotation_behavior != movement_rotation_behavior.LEFT_RIGHT_ROTATION else Vector3.RIGHT)
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	velocity = calculate_movement_direction() * character_speed
 
 	if character_body.is_on_floor():
@@ -149,20 +149,20 @@ func aim(direction):
 func primary(pressed):
 	jump_input = pressed
 
-func secondary(pressed):
+func secondary(_pressed):
 	pass
 
-func tertiary(pressed):
+func tertiary(_pressed):
 	pass
 
-func quaternary(pressed):
+func quaternary(_pressed):
 	pass
 
-func left_trigger(pressed):
+func left_trigger(_pressed):
 	pass
 
-func right_trigger(pressed):
+func right_trigger(_pressed):
 	pass
 
-func pause(pressed):
+func pause(_pressed):
 	pass

@@ -14,62 +14,80 @@ var can_control = false
 enum AIState { CHOOSING_ACTION, IDLING, MOVING, ATTACKING, HEALING, FLEEING, ENDING_TURN }
 var action_delay = 1.0
 
-var move_action: Vector2:
+var move_action: Vector2 = Vector2.ZERO:
 	set(value):
-		for game_thing in inventory:
-			game_thing.move(value)
+		if value != move_action:
+			for game_thing in inventory:
+				game_thing.move(value)
+			move_action = value
 	get:
 		return move_action
 
-var aim_action: Vector2:
+var aim_action: Vector2 = Vector2.ZERO:
 	set(value):
-		# if value != aim_action:
-		for game_thing in inventory:
-			game_thing.aim(value)
-		aim_action = value
+		if value != aim_action:
+			for game_thing in inventory:
+				game_thing.aim(value)
+			aim_action = value
 	get:
 		return aim_action
+				
+var mouse_input: Vector2 = Vector2.ZERO:
+	set(value):
+		if value != mouse_input:
+			aim_action = value
+			mouse_input = value
 
 var left_trigger_action: bool = false:
 	set(value):
-		for game_thing in inventory:
-			game_thing.left_trigger(value)
+		if value != left_trigger_action:
+			for game_thing in inventory:
+				game_thing.left_trigger(value)
+			left_trigger_action = value
 
 var right_trigger_action: bool = false:
 	set(value):
-		for game_thing in inventory:
-			game_thing.right_trigger(value)
+		if value != right_trigger_action:
+			for game_thing in inventory:
+				game_thing.right_trigger(value)
+			right_trigger_action = value
 
 var primary_action: bool = false:
 	set(value):
-		for game_thing in inventory:
-			game_thing.primary(value)
+		if value != primary_action:
+			for game_thing in inventory:
+				game_thing.primary(value)
+			primary_action = value
 
 var secondary_action: bool = false:
 	set(value):
 		if value != secondary_action:
 			for game_thing in inventory:
 				game_thing.secondary(value)
+			secondary_action = value
 
 var tertiary_action: bool = false:
 	set(value):
 		if value != tertiary_action:
 			for game_thing in inventory:
 				game_thing.tertiary(value)
+			tertiary_action = value
 
 var quaternary_action: bool = false:
 	set(value):
 		if value != quaternary_action:
 			for game_thing in inventory:
 				game_thing.quaternary(value)
+			quaternary_action = value
 
 var pause_action: bool = false:
 	set(value):
 		if value != pause_action:
 			for game_thing in inventory:
 				game_thing.pause(value)
-				
-var mouse_input: Vector2 = Vector2.ZERO
+			pause_action = value
+
+var aiming_this_frame: bool = false
 
 func _input(event):
 	if is_player:
@@ -83,16 +101,17 @@ func _input(event):
 		tertiary_action = input.is_action_pressed("tertiary")
 		quaternary_action = input.is_action_pressed("quaternary")
 		pause_action = input.is_action_pressed("pause")
+		
+		if device_id < 0:
+			# Get mouse movement
+			if event is InputEventMouseMotion:
+				mouse_input = Vector2(event.relative.y, event.relative.x)
+				aiming_this_frame = true
 
-func _unhandled_input(event):
-	if device_id < 0:
-		# Get mouse movement
-		if event is InputEventMouseMotion:
-			mouse_input = Vector2(event.relative.y, event.relative.x)
-
-	if mouse_input.length() > 0:
-		aim_action = aim_action + mouse_input
-	mouse_input = Vector2.ZERO
+func _process(delta):
+	if not aiming_this_frame:
+		mouse_input = Vector2.ZERO
+	aiming_this_frame = false
 
 # Called when the node is destroyed
 func tree_exiting():
