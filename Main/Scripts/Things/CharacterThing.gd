@@ -183,11 +183,21 @@ func pause(_pressed):
 
 @export_category("Character Assembly")
 
-@export var character_info: CharacterInfo
+@export_file("*.tres") var character_info_path
+func assemble_character(path: String = ""):
+	if path == "":
+		path = character_info_path
+	var character_info_resource = load(path)
+	
+	if character_info_resource:
+		thing_name = character_info_resource.name
+		thing_description = character_info_resource.description
+		thing_value = character_info_resource.value
 
-func assemble_character():
-	for part_path in character_info.character_parts:
-		var part_scene = preload(part_path)
-		var part_instance = part_scene.instance()
-		attachment_node.add_child(part_instance)
-		# Here, you can set any properties on the part, such as color.
+		print("Assembling character: " + thing_name)
+
+		for part_path in character_info_resource.character_parts:
+			var part_scene = load(part_path)
+			var part_instance = part_scene.instance()
+			character_base.add_child(part_instance)
+			# Set any properties on the part, such as color.

@@ -3,8 +3,8 @@ class_name GameThing
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	# max_health = variables.GetVariable("health")
-	health = maxHealth
+	max_health = variables.get("health", 100)
+	health = max_health
 	
 	for path in inventory_paths:
 		var node = get_node(path)
@@ -17,8 +17,9 @@ func _ready():
 	# print("Final Inventory:", inventory)
 
 # Variables
-var thingName : String
-var thingDescription : String = ""
+var thing_name : String
+var thing_description : String = ""
+var thing_value : int = 0
 
 @export var inventory_paths : Array[NodePath] = []
 var inventory : Array[GameThing] = []
@@ -38,16 +39,17 @@ var health: int = 0:
 		if value < 0:
 			value = 0
 			die()
-		if value > maxHealth:
-			value = maxHealth
+		if value > max_health:
+			value = max_health
 		health = value
 	get:
 		return health
 
-var maxHealth: int = 100
+var max_health: int = 100
+
+@export var variables: Dictionary
 
 # Functions
-
 func die():
 	print("Dying!")
 	# Destroy self

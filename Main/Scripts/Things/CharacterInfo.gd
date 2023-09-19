@@ -1,24 +1,28 @@
 extends Resource
 class_name CharacterInfo
 
-# An array to store the paths to the PackedScene of each character part.
-var character_parts: Array
+# The name of the character.
+@export var name: String
 
-# Additional variables related to the character (e.g., stats, energy).
-var energy = 100
-var speed = 10
+# The description of the character.
+@export var description: String
+
+# The value of the character.
+@export var value: int
+
+# An array to store the paths to the PackedScene of each character part.
+@export var character_parts: Array[PackedScene]
+
+# A dictionary to store the variables.
+@export var variables: Dictionary
 
 # Methods to serialize and deserialize the data to/from JSON.
 func to_json() -> String:
 	var data = {
-		"parts": character_parts,
-		"energy": energy,
-		"speed": speed
+		"parts": character_parts
 	}
 	return to_json()
 
 func from_json(json_string: String):
 	var data = from_json(json_string)
 	character_parts = data["parts"]
-	energy = data["energy"]
-	speed = data["speed"]
