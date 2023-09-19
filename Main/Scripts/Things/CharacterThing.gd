@@ -62,16 +62,17 @@ var _energy : float
 func _ready():
 	super()
 
-	energy = max_energy
+	assemble_character()
 	gameplay_camera.set_camera_object(self, 1, true)
 	character_body.velocity = Vector3.ZERO
+	energy = max_energy
 	
 	rotate_base(Vector3.FORWARD if rotation_behavior != movement_rotation_behavior.LEFT_RIGHT_ROTATION else Vector3.RIGHT)
 
 func _physics_process(delta):
-	var movement = calculate_movement_direction() * character_speed
-	velocity.x = movement.x
-	velocity.z = movement.z
+	var movement_vector = calculate_movement_direction() * character_speed
+	velocity.x = movement_vector.x
+	velocity.z = movement_vector.z
 
 	if character_body.is_on_floor():
 		if !jump_input:
@@ -181,5 +182,12 @@ func pause(_pressed):
 # 5. Character Assembly Variables
 
 @export_category("Character Assembly")
-@export var character_parts: Array = [PackedScene]
 
+@export var character_info: CharacterInfo
+
+func assemble_character():
+	for part_path in character_info.character_parts:
+		var part_scene = preload(part_path)
+		var part_instance = part_scene.instance()
+		attachment_node.add_child(part_instance)
+		# Here, you can set any properties on the part, such as color.
