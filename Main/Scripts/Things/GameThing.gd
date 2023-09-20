@@ -9,11 +9,8 @@ func _ready():
 	for path in inventory_paths:
 		var node = get_node(path)
 		# print("Node fetched for path: ", path, " is: ", node)
-		if node and node is GameThing:
+		if node and node is ThingSlot:
 			inventory.append(node)
-			# print("Node added to inventory: ", node)
-		else:
-			printerr("Node at path %s is not a GameThing!" % path)
 	# print("Final Inventory:", inventory)
 
 # Variables
@@ -21,8 +18,11 @@ var thing_name : String
 var thing_description : String = ""
 var thing_value : int = 0
 
+var thing_type : String
+var thing_subtype : String
+
 @export var inventory_paths : Array[NodePath] = []
-var inventory : Array[GameThing] = []
+var inventory : Array[ThingSlot] = []
 
 var thing_top: Node3D = null:
 	get:
@@ -50,6 +50,10 @@ var max_health: int = 100
 @export var variables: Dictionary
 
 # Functions
+func _init():
+	thing_type = "Game"
+	thing_subtype = "Game"
+
 func die():
 	print("Dying!")
 	# Destroy self

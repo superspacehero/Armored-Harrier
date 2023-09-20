@@ -59,6 +59,9 @@ var _energy : float
 
 # 2. Built-in Functions
 
+func _init():
+	thing_type = "Character"
+
 func _ready():
 	super()
 
@@ -184,7 +187,13 @@ func pause(_pressed):
 @export_category("Character Assembly")
 
 @export_file("*.tres") var character_info_path
+var parts: Array = [CharacterPartThing]
+var added_parts: Array = [CharacterPartThing]
+
+# 6. Character Assembly Functions
+
 func assemble_character(path: String = ""):
+	clear_previous_parts()
 	if path == "":
 		path = character_info_path
 	var character_info_resource = load(path)
@@ -196,8 +205,36 @@ func assemble_character(path: String = ""):
 
 		print("Assembling character: " + thing_name)
 
-		for part_path in character_info_resource.character_parts:
-			var part_scene = load(part_path)
-			var part_instance = part_scene.instance()
+		for part in character_info_resource.character_parts:
+			var part_instance = part.instantiate()
 			character_base.add_child(part_instance)
+			parts.append(part_instance)
 			# Set any properties on the part, such as color.
+
+		# Attach parts to other parts.
+		attach_part_to_slot(character_base)
+
+func clear_previous_parts() -> void:
+	# Clear children from the base.
+	for child in character_base.get_children():
+		child.queue_free()
+
+	parts.clear()
+	added_parts.clear()
+
+func attach_part(part: CharacterPartThing, parent: ThingSlot):
+	if !added_parts.has(part):
+		parent.add_thing(part)
+		added_parts.append(part)
+		print("Attached part: " + part.name + " to " + parent.name)
+
+func attach_parts_to_part(part: CharacterPartThing):
+	for slot in part.inventory:
+		if slot is ThingSlot:
+			attach_part_to_slot(slot)
+
+func attach_part_to_slot(slot: ThingSlot):
+	for part in parts:
+		if (part.thing_type == slot.name or part.thing_subtype == slot.name) and !added_parts.has(part):
+			attach_part(part, slot)
+			break
