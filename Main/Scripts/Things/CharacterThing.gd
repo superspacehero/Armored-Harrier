@@ -207,12 +207,15 @@ func assemble_character(path: String = ""):
 
 		for part in character_info_resource.character_parts:
 			var part_instance = part.instantiate()
-			# character_base.add_child(part_instance)
+			if part_instance is HeadThing:
+				thing_top = part_instance.thing_top
 			parts.append(part_instance)
 			# Set any properties on the part, such as color.
 
 		# Attach parts to other parts.
 		attach_part_to_slot(character_base)
+
+	thing_top = thing_top
 
 func clear_previous_parts() -> void:
 	# Clear children from the base.
@@ -228,12 +231,14 @@ func attach_part(part: CharacterPartThing, parent: ThingSlot):
 		added_parts.append(part)
 
 		part.position = Vector3.ZERO
-		part.rotation = Vector3.ZERO
+		# part.rotation = Vector3.ZERO
 		part.scale = Vector3.ONE
+
+		variables.merge(part.variables)
 
 		attach_parts_to_part(part)
 
-		print("Attached part: " + part.name + " to " + parent.name)
+		# print("Attached part: " + part.name + " to " + parent.name)
 
 func attach_parts_to_part(part: CharacterPartThing):
 	for slot in part.inventory:
@@ -248,4 +253,4 @@ func attach_part_to_slot(slot: ThingSlot):
 			attached_part_success = true
 			break
 	if !attached_part_success:
-		print("Could not attach part to slot: " + slot.name)
+		print("No part to attach to slot: " + slot.name)

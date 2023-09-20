@@ -108,7 +108,7 @@ func _input(event):
 				mouse_input = Vector2(event.relative.y, event.relative.x)
 				aiming_this_frame = true
 
-func _process(delta):
+func _process(_delta):
 	if not aiming_this_frame:
 		mouse_input = Vector2.ZERO
 	aiming_this_frame = false

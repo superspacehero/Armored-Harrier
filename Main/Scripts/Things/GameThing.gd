@@ -9,7 +9,7 @@ func _ready():
 	for path in inventory_paths:
 		var node = get_node(path)
 		# print("Node fetched for path: ", path, " is: ", node)
-		if node and node is ThingSlot:
+		if node:
 			inventory.append(node)
 	# print("Final Inventory:", inventory)
 
@@ -22,17 +22,21 @@ var thing_type : String
 var thing_subtype : String
 
 @export var inventory_paths : Array[NodePath] = []
-var inventory : Array[ThingSlot] = []
+var inventory : Array = []
 
 var thing_top: Node3D = null:
 	get:
-		if _thing_top == null:
-			_thing_top = find_child("Top", true, true)
-		if _thing_top == null:
-			# print("No thing_top found for", name, ". Setting to transform.")
-			_thing_top = self
-		return _thing_top
-var _thing_top: Node
+		if thing_top == null:
+			thing_top = find_child("Top", true, true)
+
+			if thing_top == null:
+				print("No thing_top found for ", name, ". Setting to transform.")
+				thing_top = self
+			else:
+				print("thing_top found for ", name, ": ", thing_top)
+		return thing_top
+	set(value):
+		thing_top = value
 
 var health: int = 0:
 	set(value):
