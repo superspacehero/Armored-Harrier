@@ -5,7 +5,7 @@ class_name CharacterThing
 
 @export var character_body : CharacterBody3D = null
 @export var gameplay_camera : GameplayCamera
-@export var character_base : Node3D = null
+@export var character_base : ThingSlot = null
 
 @export_category("Movement")
 @export var character_speed : float = 8  # The speed at which the character moves.
@@ -203,11 +203,11 @@ func assemble_character(path: String = ""):
 		thing_description = character_info_resource.description
 		thing_value = character_info_resource.value
 
-		print("Assembling character: " + thing_name)
+		# print("Assembling character: " + thing_name)
 
 		for part in character_info_resource.character_parts:
 			var part_instance = part.instantiate()
-			character_base.add_child(part_instance)
+			# character_base.add_child(part_instance)
 			parts.append(part_instance)
 			# Set any properties on the part, such as color.
 
@@ -226,6 +226,13 @@ func attach_part(part: CharacterPartThing, parent: ThingSlot):
 	if !added_parts.has(part):
 		parent.add_thing(part)
 		added_parts.append(part)
+
+		part.position = Vector3.ZERO
+		part.rotation = Vector3.ZERO
+		part.scale = Vector3.ONE
+
+		attach_parts_to_part(part)
+
 		print("Attached part: " + part.name + " to " + parent.name)
 
 func attach_parts_to_part(part: CharacterPartThing):
@@ -234,7 +241,11 @@ func attach_parts_to_part(part: CharacterPartThing):
 			attach_part_to_slot(slot)
 
 func attach_part_to_slot(slot: ThingSlot):
+	var attached_part_success: bool = false
 	for part in parts:
-		if (part.thing_type == slot.name or part.thing_subtype == slot.name) and !added_parts.has(part):
+		if (part.thing_type == slot.thing_type or part.thing_subtype == slot.thing_type) and !added_parts.has(part):
 			attach_part(part, slot)
+			attached_part_success = true
 			break
+	if !attached_part_success:
+		print("Could not attach part to slot: " + slot.name)
