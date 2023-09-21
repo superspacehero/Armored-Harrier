@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://d3dnji42fvg0d"]
+[gd_scene load_steps=11 format=3 uid="uid://d3dnji42fvg0d"]
 
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="2_8hthw"]
 [ext_resource type="PackedScene" uid="uid://4ssg4xnbbkyu" path="res://Main/Prefabs/Game Manager.res" id="2_84v2m"]
 [ext_resource type="Resource" path="res://Main/Art/Terrain/data.hterrain" id="3_3gvm1"]
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="4_n0sni"]
-[ext_resource type="Texture2D" uid="uid://1vx1r5wxfacr" path="res://Main/Art/Textures/wests_textures/028.png" id="5_ay236"]
+[ext_resource type="Texture2D" uid="uid://3ajltnbri7e6" path="res://Main/Art/Textures/wests_textures/042.png" id="5_xbndm"]
+[ext_resource type="Texture2D" uid="uid://bptxufip14c8r" path="res://Main/Art/Textures/wests_textures/021.png" id="6_fl03l"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nw5uv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -16,13 +17,13 @@ sky_material = SubResource("ProceduralSkyMaterial_nw5uv")
 [sub_resource type="Environment" id="Environment_buy17"]
 background_mode = 2
 sky = SubResource("Sky_2rx6y")
-tonemap_mode = 2
+tonemap_mode = 3
 glow_enabled = true
 
 [sub_resource type="Resource" id="Resource_ty1th"]
 script = ExtResource("4_n0sni")
 mode = 0
-textures = [[ExtResource("5_ay236")], [null]]
+textures = [[ExtResource("5_xbndm"), ExtResource("6_fl03l")], [null, null]]
 
 [node name="Node3D" type="Node3D"]
 
@@ -30,7 +31,7 @@ textures = [[ExtResource("5_ay236")], [null]]
 environment = SubResource("Environment_buy17")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0.457835, -0.485786, 0.74458, -0.200966, 0.759284, 0.618952, 0, 0, 0)
 shadow_enabled = true
 
 [node name="Game Manager" parent="." instance=ExtResource("2_84v2m")]
