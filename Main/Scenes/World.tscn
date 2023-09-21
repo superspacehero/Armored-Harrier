@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://d3dnji42fvg0d"]
+[gd_scene load_steps=26 format=3 uid="uid://d3dnji42fvg0d"]
 
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="2_8hthw"]
 [ext_resource type="PackedScene" uid="uid://4ssg4xnbbkyu" path="res://Main/Prefabs/Game Manager.res" id="2_84v2m"]
@@ -6,6 +6,15 @@
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="4_n0sni"]
 [ext_resource type="Texture2D" uid="uid://3ajltnbri7e6" path="res://Main/Art/Textures/wests_textures/042.png" id="5_xbndm"]
 [ext_resource type="Texture2D" uid="uid://bptxufip14c8r" path="res://Main/Art/Textures/wests_textures/021.png" id="6_fl03l"]
+[ext_resource type="Script" path="res://addons/proton_scatter/src/scatter.gd" id="7_pclhy"]
+[ext_resource type="Script" path="res://addons/proton_scatter/src/stack/modifier_stack.gd" id="8_tl82s"]
+[ext_resource type="Script" path="res://addons/proton_scatter/src/modifiers/create_inside_random.gd" id="9_bmush"]
+[ext_resource type="Script" path="res://addons/proton_scatter/src/modifiers/randomize_transforms.gd" id="10_qgaxt"]
+[ext_resource type="Script" path="res://addons/proton_scatter/src/modifiers/relax.gd" id="11_3fb76"]
+[ext_resource type="Script" path="res://addons/proton_scatter/src/modifiers/project_on_geometry.gd" id="12_8lbkn"]
+[ext_resource type="Script" path="res://addons/proton_scatter/src/scatter_item.gd" id="13_a8diq"]
+[ext_resource type="Script" path="res://addons/proton_scatter/src/scatter_shape.gd" id="14_mqqde"]
+[ext_resource type="Script" path="res://addons/proton_scatter/src/shapes/sphere_shape.gd" id="15_47kx4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nw5uv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -24,6 +33,62 @@ glow_enabled = true
 script = ExtResource("4_n0sni")
 mode = 0
 textures = [[ExtResource("5_xbndm"), ExtResource("6_fl03l")], [null, null]]
+
+[sub_resource type="Resource" id="Resource_s61bq"]
+script = ExtResource("9_bmush")
+amount = 75
+enabled = true
+override_global_seed = false
+custom_seed = 0
+restrict_height = true
+reference_frame = 1
+
+[sub_resource type="Resource" id="Resource_5a118"]
+script = ExtResource("10_qgaxt")
+position = Vector3(0.15, 0.15, 0.15)
+rotation = Vector3(20, 360, 20)
+scale = Vector3(0.1, 0.1, 0.1)
+enabled = true
+override_global_seed = false
+custom_seed = 0
+restrict_height = false
+reference_frame = 2
+
+[sub_resource type="Resource" id="Resource_b5dti"]
+script = ExtResource("11_3fb76")
+iterations = 3
+offset_step = 0.2
+consecutive_step_multiplier = 0.75
+use_computeshader = true
+enabled = true
+override_global_seed = false
+custom_seed = 0
+restrict_height = true
+reference_frame = 0
+
+[sub_resource type="Resource" id="Resource_kxx8b"]
+script = ExtResource("12_8lbkn")
+ray_direction = Vector3(0, -1, 0)
+ray_length = 5.0
+ray_offset = 5.0
+remove_points_on_miss = false
+align_with_collision_normal = false
+max_slope = 90.0
+collision_mask = 1
+exclude_mask = 0
+enabled = true
+override_global_seed = false
+custom_seed = 0
+restrict_height = false
+reference_frame = 0
+
+[sub_resource type="Resource" id="Resource_k675c"]
+script = ExtResource("8_tl82s")
+stack = Array[Resource("res://addons/proton_scatter/src/modifiers/base_modifier.gd")]([SubResource("Resource_s61bq"), SubResource("Resource_5a118"), SubResource("Resource_b5dti"), SubResource("Resource_kxx8b")])
+
+[sub_resource type="Resource" id="Resource_e6eej"]
+script = ExtResource("15_47kx4")
+radius = 10.0
 
 [node name="Node3D" type="Node3D"]
 
@@ -57,5 +122,21 @@ shader_params/u_tile_reduction = null
 shader_params/u_globalmap_blend_start = null
 shader_params/u_globalmap_blend_distance = null
 shader_params/u_colormap_opacity_per_texture = null
+
+[node name="ProtonScatter" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -14.7772, 0)
+script = ExtResource("7_pclhy")
+modifier_stack = SubResource("Resource_k675c")
+Performance/use_chunks = true
+Performance/chunk_dimensions = Vector3(15, 15, 15)
+
+[node name="ScatterItem" type="Node3D" parent="ProtonScatter"]
+script = ExtResource("13_a8diq")
+path = "res://addons/proton_scatter/demos/assets/brick.tscn"
+
+[node name="ScatterShape" type="Node3D" parent="ProtonScatter"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
+script = ExtResource("14_mqqde")
+shape = SubResource("Resource_e6eej")
 
 [editable path="Game Manager"]
