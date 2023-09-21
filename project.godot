@@ -21,7 +21,7 @@ MultiplayerInput="*res://addons/multiplayer_input/multiplayer_input.gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/compass/plugin.cfg", "res://addons/multiplayer_input/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg")
+enabled=PackedStringArray("res://addons/compass/plugin.cfg", "res://addons/multiplayer_input/plugin.cfg", "res://addons/proton_scatter/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg")
 
 [input]
 
