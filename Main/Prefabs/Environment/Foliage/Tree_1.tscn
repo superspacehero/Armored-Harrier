@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://d0go6uad60d6k"]
+
+[ext_resource type="Shader" path="res://Main/Art/Shaders/Billboard.gdshader" id="1_u1ilf"]
+[ext_resource type="Texture2D" uid="uid://bs8714oxip2r4" path="res://Main/Art/Sprites/Environment/Foliage.png" id="2_1oh64"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fctbn"]
+render_priority = 0
+shader = ExtResource("1_u1ilf")
+shader_parameter/uv_scale = Vector2(0.5, 1)
+shader_parameter/uv_offset = Vector2(0, 0)
+shader_parameter/scale = Vector3(1, 1, 1)
+shader_parameter/wind_strength = 0.1
+shader_parameter/wind_speed = 2.0
+shader_parameter/albedo_texture = ExtResource("2_1oh64")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_s3o81"]
+material = SubResource("ShaderMaterial_fctbn")
+size = Vector2(3, 3)
+center_offset = Vector3(0, 1.5, 0)
+orientation = 2
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_xsp3r"]
+height = 1.8
+radius = 0.75
+
+[node name="Tree_1" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_s3o81")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CylinderShape3D_xsp3r")
