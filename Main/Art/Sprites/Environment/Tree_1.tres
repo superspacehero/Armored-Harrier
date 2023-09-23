@@ -1,7 +1,0 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://b3ob72n5nwety"]
-
-[ext_resource type="Texture2D" uid="uid://bs8714oxip2r4" path="res://Main/Art/Sprites/Environment/Foliage.png" id="1_gcyyj"]
-
-[resource]
-atlas = ExtResource("1_gcyyj")
-region = Rect2(0, 0, 128, 128)

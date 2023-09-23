@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bs8714oxip2r4"
-path="res://.godot/imported/Foliage.png-f3eb6720513a6f4b42b6b4256b7b9250.ctex"
+uid="uid://ckq5ox3ipyu6p"
+path="res://.godot/imported/Sign_Traffic.png-ca7ba1a066bc24e846e2f9708740909b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Main/Art/Sprites/Environment/Foliage.png"
-dest_files=["res://.godot/imported/Foliage.png-f3eb6720513a6f4b42b6b4256b7b9250.ctex"]
+source_file="res://Main/Art/Textures/Environment/City/Street Signs/Sign_Traffic.png"
+dest_files=["res://.godot/imported/Sign_Traffic.png-ca7ba1a066bc24e846e2f9708740909b.ctex"]
 
 [params]
 

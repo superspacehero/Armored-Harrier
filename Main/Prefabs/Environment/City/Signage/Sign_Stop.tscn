@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://beeb2bpene2nt"]
+
+[ext_resource type="Texture2D" uid="uid://cwgxgccmg8ysi" path="res://Main/Art/Textures/Environment/City/Street Signs/Sign_Stop.png" id="1_8sc0h"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fn8mf"]
+transparency = 4
+albedo_texture = ExtResource("1_8sc0h")
+texture_filter = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_8km2c"]
+_surfaces = [{
+"aabb": AABB(-0.125, -9.93664e-15, -1.095e-08, 0.25, 0.5, 1.00438e-05),
+"format": 4097,
+"index_count": 12,
+"index_data": PackedByteArray(0, 0, 2, 0, 1, 0, 2, 0, 3, 0, 1, 0, 1, 0, 3, 0, 4, 0, 3, 0, 2, 0, 4, 0),
+"name": "Material.001",
+"primitive": 3,
+"vertex_count": 5,
+"vertex_data": PackedByteArray(0, 0, 0, 190, 167, 0, 51, 168, 251, 223, 12, 51, 0, 0, 0, 190, 0, 0, 0, 63, 68, 92, 44, 52, 0, 0, 0, 62, 175, 8, 111, 167, 156, 30, 60, 50, 0, 0, 0, 62, 0, 0, 0, 63, 47, 230, 20, 52, 0, 0, 0, 190, 175, 8, 111, 39, 156, 30, 60, 178)
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_0ykec"]
+resource_name = "Root Scene_Plane"
+_surfaces = [{
+"aabb": AABB(-0.125, -9.93664e-15, -1.095e-08, 0.25, 0.5, 1.00438e-05),
+"attribute_data": PackedByteArray(0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 128, 63),
+"format": 4119,
+"index_count": 12,
+"index_data": PackedByteArray(0, 0, 2, 0, 1, 0, 2, 0, 3, 0, 1, 0, 4, 0, 6, 0, 5, 0, 6, 0, 7, 0, 5, 0),
+"material": SubResource("StandardMaterial3D_fn8mf"),
+"name": "Material.001",
+"primitive": 3,
+"vertex_count": 8,
+"vertex_data": PackedByteArray(0, 0, 0, 190, 167, 0, 51, 168, 251, 223, 12, 51, 0, 0, 255, 255, 0, 0, 255, 191, 0, 0, 0, 190, 0, 0, 0, 63, 68, 92, 44, 52, 0, 0, 255, 255, 0, 0, 255, 191, 0, 0, 0, 62, 175, 8, 111, 167, 156, 30, 60, 50, 0, 0, 255, 255, 0, 0, 255, 191, 0, 0, 0, 62, 0, 0, 0, 63, 47, 230, 20, 52, 0, 0, 255, 255, 0, 0, 255, 191, 0, 0, 0, 190, 0, 0, 0, 63, 68, 92, 44, 52, 255, 127, 255, 127, 255, 255, 255, 191, 0, 0, 0, 190, 175, 8, 111, 39, 156, 30, 60, 178, 255, 127, 255, 127, 255, 255, 255, 191, 0, 0, 0, 62, 0, 0, 0, 63, 47, 230, 20, 52, 255, 127, 255, 127, 255, 255, 255, 191, 0, 0, 0, 62, 175, 8, 111, 167, 156, 30, 60, 50, 255, 127, 255, 127, 255, 255, 255, 191)
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_8km2c")
+
+[node name="Sign" type="MeshInstance3D"]
+mesh = SubResource("ArrayMesh_0ykec")
+skeleton = NodePath("")

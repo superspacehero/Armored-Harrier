@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://derice2ee2vpi"]
+
+[ext_resource type="Texture2D" uid="uid://cwgxgccmg8ysi" path="res://Main/Art/Textures/Environment/City/Street Signs/Sign_Stop.png" id="1_xy3om"]
+
+[resource]
+transparency = 4
+albedo_texture = ExtResource("1_xy3om")

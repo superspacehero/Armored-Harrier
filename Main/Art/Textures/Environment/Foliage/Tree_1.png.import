@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwgxgccmg8ysi"
-path="res://.godot/imported/Stop.png-e4a11e3fd6de2b13e3d93fa3fe677f03.ctex"
+uid="uid://dscgmq4uec5v8"
+path="res://.godot/imported/Tree_1.png-bd16f67c6421d98c370acee056b7152e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Main/Art/Textures/Environment/City/Street Signs/Stop.png"
-dest_files=["res://.godot/imported/Stop.png-e4a11e3fd6de2b13e3d93fa3fe677f03.ctex"]
+source_file="res://Main/Art/Textures/Environment/Foliage/Tree_1.png"
+dest_files=["res://.godot/imported/Tree_1.png-bd16f67c6421d98c370acee056b7152e.ctex"]
 
 [params]
 
@@ -31,4 +31,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0
