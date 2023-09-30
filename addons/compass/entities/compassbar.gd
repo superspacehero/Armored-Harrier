@@ -22,7 +22,7 @@ func _ready() -> void:
 
 
 func _setup() -> void:
-	set_stretch_mode(TextureRect.STRETCH_KEEP_CENTERED)
+	# set_stretch_mode(TextureRect.STRETCH_KEEP_CENTERED)
 	set_material(mat)
 	set_texture_repeat(CanvasItem.TEXTURE_REPEAT_ENABLED)
 

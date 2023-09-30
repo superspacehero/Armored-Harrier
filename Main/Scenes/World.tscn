@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://d3dnji42fvg0d"]
+[gd_scene load_steps=17 format=3 uid="uid://d3dnji42fvg0d"]
 
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="2_8hthw"]
 [ext_resource type="PackedScene" uid="uid://4ssg4xnbbkyu" path="res://Main/Prefabs/Game Manager.res" id="2_84v2m"]
@@ -12,19 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://beeb2bpene2nt" path="res://Main/Prefabs/Environment/City/Signage/Sign_Stop.tscn" id="10_dnba2"]
 [ext_resource type="PackedScene" uid="uid://dhb6q8ny1oqii" path="res://Main/Prefabs/Environment/City/Signage/Sign_Traffic.tscn" id="10_iw2yv"]
 [ext_resource type="PackedScene" uid="uid://b8pl1jkovvqsh" path="res://Main/Prefabs/Environment/City/Signage/Sign_Yield.tscn" id="11_wxqkj"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nw5uv"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-
-[sub_resource type="Sky" id="Sky_2rx6y"]
-sky_material = SubResource("ProceduralSkyMaterial_nw5uv")
-
-[sub_resource type="Environment" id="Environment_buy17"]
-background_mode = 2
-sky = SubResource("Sky_2rx6y")
-tonemap_mode = 3
-glow_enabled = true
 
 [sub_resource type="Resource" id="Resource_ty1th"]
 script = ExtResource("4_n0sni")
@@ -72,12 +59,11 @@ shadow_mesh = SubResource("ArrayMesh_kpg5s")
 
 [node name="Node3D" type="Node3D"]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_buy17")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0.457835, -0.485786, 0.74458, -0.200966, 0.759284, 0.618952, 0, 0, 0)
 shadow_enabled = true
+shadow_transmittance_bias = 0.0
+shadow_blur = 0.5
 
 [node name="Game Manager" parent="." instance=ExtResource("2_84v2m")]
 
@@ -112,7 +98,7 @@ cast_shadow = 0
 shader_params/u_globalmap_tint_bottom = 0.0
 shader_params/u_globalmap_tint_top = 0.0
 shader_params/u_bottom_ao = 1.0
-shader_params/u_instance_scale = Vector3(4, 4, 4)
+shader_params/u_instance_scale = Vector3(3, 3, 3)
 shader_params/u_roughness = 1.0
 metadata/_editor_icon = ExtResource("9_dsoc4")
 
