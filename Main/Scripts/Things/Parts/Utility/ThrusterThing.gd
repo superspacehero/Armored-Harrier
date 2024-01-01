@@ -4,7 +4,7 @@ class_name ThrusterThing
 func _init():
 	thing_subtype = "Thruster"
 
-@export var thrust_power : Vector2 = Vector2(2000, 100)
+@export var thrust_power : Vector2 = Vector2(1000, 100)
 @export var energy_consumption_rate : float = 30.0
 
 var thrust_amount: Vector2 = Vector2(0, 0)
