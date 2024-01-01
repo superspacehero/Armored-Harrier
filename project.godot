@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Armored Harrier"
 run/main_scene="res://Main/Scenes/World.tscn"
-config/features=PackedStringArray("4.1")
+config/features=PackedStringArray("4.2")
 config/icon="res://icon.png"
 
 [autoload]

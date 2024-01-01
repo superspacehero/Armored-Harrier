@@ -1,9 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://nuvklwq21yyo"]
+[gd_scene load_steps=14 format=3 uid="uid://nuvklwq21yyo"]
 
 [ext_resource type="Script" path="res://addons/compass/entities/compass3d.gd" id="1_8htyy"]
 [ext_resource type="Script" path="res://addons/compass/example/camera3d.gd" id="1_hcv1h"]
 [ext_resource type="Script" path="res://addons/compass/entities/compass2d.gd" id="4_trp6u"]
-[ext_resource type="Texture2D" uid="uid://dwfilxc0fnhmr" path="res://icon.svg" id="5_7s0cs"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="5_h3uew"]
 [ext_resource type="Texture2D" uid="uid://bg5fxjgjk8nfg" path="res://addons/compass/resources/compassbar.png" id="5_lbo08"]
 [ext_resource type="Script" path="res://addons/compass/entities/compassbar.gd" id="6_ikwdp"]
@@ -75,7 +74,7 @@ scale = Vector2(2, 2)
 [node name="TextureRect" type="Sprite2D" parent="Camera3d/CenterContainer"]
 modulate = Color(0.0784314, 0.0784314, 0.0784314, 1)
 position = Vector2(48.5, -3)
-texture = ExtResource("5_7s0cs")
+texture = null
 region_enabled = true
 region_rect = Rect2(63.9976, 72.1607, 1.00239, 4.83927)
 

@@ -26,14 +26,16 @@ enum movement_rotation_behavior { NONE, FULL_ROTATION, LEFT_RIGHT_ROTATION, TOWA
 @export var rotation_behavior = movement_rotation_behavior.TOWARDS_CAMERA
 
 @export_category("Energy")
-@export var max_energy : float = 100
+@export var max_energy : float = 100.0
 @export var energy_bar : ProgressBar
+@export var energy_recovery_rate : float = 20.0
 
 var energy_consumption_rate : float
 var can_use_energy : bool = true
 
 var jump_input: bool = false
 var is_jumping: bool = false
+var thrust_amount : Vector2 = Vector2(0, 0)
 
 var velocity : Vector3 = Vector3.ZERO
 var goto_rotation: float
@@ -72,33 +74,57 @@ func _ready():
 	
 	rotate_base(Vector3.FORWARD if rotation_behavior != movement_rotation_behavior.LEFT_RIGHT_ROTATION else Vector3.RIGHT)
 
+var is_thrusting = false
+
+func set_thrusting(state: bool):
+	is_thrusting = state
+	if is_thrusting:
+		# Initialize thrusting logic here if needed
+		pass
+	else:
+		# Reset or stop thrusting logic here if needed
+		pass
+
 func _physics_process(delta):
-	var movement_vector = calculate_movement_direction() * character_speed
-	velocity.x = movement_vector.x
-	velocity.z = movement_vector.z
+	var movement_vector = calculate_movement_direction()
+	velocity.x = movement_vector.x * character_speed
+	velocity.z = movement_vector.z * character_speed
 
 	if character_body.is_on_floor():
-		if !jump_input:
+		if not is_thrusting:
 			is_jumping = false
+			thrust_amount.y = 0
 
-		if can_control != control_level.NONE and can_jump and jump_input and !is_jumping:
+		if can_control != control_level.NONE and can_jump and jump_input and not is_jumping:
 			velocity.y = jump_velocity
 			is_jumping = true
 		elif velocity.y < 0:
 			velocity.y = 0
 	else:
 		velocity.y -= gravity * delta
-	
-	character_body.move_and_slide()
 
+	if is_jumping or is_thrusting:
+		velocity.y += thrust_amount.y * delta
+
+	# Apply horizontal thrust
+	if thrust_amount.x != 0:
+		var thrust_direction = movement_vector if movement_vector.length() > 0 else -character_base.basis.z
+		velocity += thrust_direction * thrust_amount.x * delta
+
+	character_body.move_and_slide()
 	character_body.velocity = velocity
+
+func is_in_air() -> bool:
+	return !character_body.is_on_floor() and is_jumping
 
 func _process(delta):
 	if can_use_energy:
 		if energy_consumption_rate > 0:
 			energy -= energy_consumption_rate * delta
+		else:
+			energy += energy_recovery_rate * delta
 	elif energy < max_energy:
-		energy += energy_consumption_rate * delta
+		energy += energy_recovery_rate * delta
 		
 	rotate_towards_goto_rotation(delta)
 
@@ -152,7 +178,7 @@ func move(direction):
 	# Normalize the direction to ensure constant speed.
 	if direction.length() > 1:
 		direction = direction.normalized()
-	
+
 	movement.x = direction.x
 	movement.z = direction.y
 	
@@ -162,22 +188,34 @@ func aim(direction):
 	gameplay_camera.camera_rotation_amount = direction
 	
 func primary(pressed):
-	jump_input = pressed
+	for part in parts:
+		if part is CharacterPartThing:
+			part.primary(pressed)
 
-func secondary(_pressed):
-	pass
+func secondary(pressed):
+	for part in parts:
+		if part is CharacterPartThing:
+			part.secondary(pressed)
 
-func tertiary(_pressed):
-	pass
+func tertiary(pressed):
+	for part in parts:
+		if part is CharacterPartThing:
+			part.tertiary(pressed)
 
-func quaternary(_pressed):
-	pass
+func quaternary(pressed):
+	for part in parts:
+		if part is CharacterPartThing:
+			part.quaternary(pressed)
 
-func left_trigger(_pressed):
-	pass
+func left_trigger(pressed):
+	for part in parts:
+		if part is CharacterPartThing:
+			part.left_trigger(pressed)
 
-func right_trigger(_pressed):
-	pass
+func right_trigger(pressed):
+	for part in parts:
+		if part is CharacterPartThing:
+			part.right_trigger(pressed)
 
 func pause(_pressed):
 	pass
@@ -211,6 +249,7 @@ func assemble_character(path: String = ""):
 				thing_top = part_instance.thing_top
 			parts.append(part_instance)
 			# Set any properties on the part, such as color.
+			part_instance.character = self
 
 		# Attach parts to other parts.
 		attach_part_to_slot(character_base)

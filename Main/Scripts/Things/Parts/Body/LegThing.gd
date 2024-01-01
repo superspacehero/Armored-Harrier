@@ -3,3 +3,7 @@ class_name LegThing
 
 func _init():
 	thing_subtype = "Leg"
+
+func primary(pressed):
+	character.jump_input = pressed
+	

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dd020m2amkbf0"]
+
+[ext_resource type="Script" path="res://Main/Scripts/Things/Parts/Utility/ThrusterThing.gd" id="1_jv050"]
+
+[node name="Thruster" type="Node3D"]
+script = ExtResource("1_jv050")

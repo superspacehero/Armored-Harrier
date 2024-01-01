@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://bsyikv3t8y2r6"]
+[gd_scene load_steps=4 format=3 uid="uid://bsyikv3t8y2r6"]
 
 [ext_resource type="Shader" path="res://Main/Art/Shaders/Billboard.gdshader" id="1_62yje"]
-[ext_resource type="Texture2D" uid="uid://bs8714oxip2r4" path="res://Main/Art/Sprites/Environment/Foliage.png" id="2_ajref"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fctbn"]
 render_priority = 0
@@ -11,7 +10,6 @@ shader_parameter/uv_offset = Vector2(0.5, 0)
 shader_parameter/scale = Vector3(1, 1, 1)
 shader_parameter/wind_strength = 0.1
 shader_parameter/wind_speed = 2.0
-shader_parameter/albedo_texture = ExtResource("2_ajref")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_s3o81"]
 material = SubResource("ShaderMaterial_fctbn")
