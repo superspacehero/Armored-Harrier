@@ -33,8 +33,13 @@ enum movement_rotation_behavior { NONE, FULL_ROTATION, LEFT_RIGHT_ROTATION, TOWA
 var energy_consumption_rate : float
 var can_use_energy : bool = true
 
+var target_movement : Vector2 = Vector2.ZERO
+var current_movement : Vector2 = Vector2.ZERO
+var air_control_smoothness : float = 0.1  # Control how smoothly the character changes direction in the air
+
 var jump_input: bool = false
 var is_jumping: bool = false
+
 var thrust_amount : Vector2 = Vector2(0, 0)
 
 var velocity : Vector3 = Vector3.ZERO
@@ -42,7 +47,6 @@ var goto_rotation: float
 var rotation_time: float = 0.25
 
 var rotation_direction: Vector3 = Vector3.FORWARD
-var movement: Vector3 = Vector3.ZERO
 
 var energy : float:
 	set(value):
@@ -74,26 +78,21 @@ func _ready():
 	
 	rotate_base(Vector3.FORWARD if rotation_behavior != movement_rotation_behavior.LEFT_RIGHT_ROTATION else Vector3.RIGHT)
 
-var is_thrusting = false
-
-func set_thrusting(state: bool):
-	is_thrusting = state
-	if is_thrusting:
-		# Initialize thrusting logic here if needed
-		pass
-	else:
-		# Reset or stop thrusting logic here if needed
-		pass
-
 func _physics_process(delta):
-	var movement_vector = calculate_movement_direction()
+	# Lerp the current movement towards the target movement
+	if is_in_air():
+		current_movement = current_movement.lerp(target_movement, air_control_smoothness)
+	else:
+		current_movement = target_movement
+
+	var movement_vector = calculate_movement_direction(current_movement)
+
 	velocity.x = movement_vector.x * character_speed
 	velocity.z = movement_vector.z * character_speed
 
 	if character_body.is_on_floor():
-		if not is_thrusting:
+		if thrust_amount.y == 0:
 			is_jumping = false
-			thrust_amount.y = 0
 
 		if can_control != control_level.NONE and can_jump and jump_input and not is_jumping:
 			velocity.y = jump_velocity
@@ -103,13 +102,18 @@ func _physics_process(delta):
 	else:
 		velocity.y -= gravity * delta
 
-	if is_jumping or is_thrusting:
+		if not is_jumping:
+			is_jumping = true
+
+	if is_jumping or thrust_amount.y != 0:
 		velocity.y += thrust_amount.y * delta
 
 	# Apply horizontal thrust
 	if thrust_amount.x != 0:
 		var thrust_direction = movement_vector if movement_vector.length() > 0 else -character_base.basis.z
 		velocity += thrust_direction * thrust_amount.x * delta
+		if is_in_air() and velocity.y < 0:
+			velocity.y = lerp(velocity.y, 0.0, 0.25)
 
 	character_body.move_and_slide()
 	character_body.velocity = velocity
@@ -130,11 +134,12 @@ func _process(delta):
 
 # 3. Movement Functions
 
-func calculate_movement_direction() -> Vector3:
+func calculate_movement_direction(input_direction: Vector2) -> Vector3:
 	var direction = Vector3.ZERO
 
-	direction += Plane(gameplay_camera.basis.x,character_body.basis.y.z).normalized().normal * movement.x
-	direction += Plane(gameplay_camera.basis.z,character_body.basis.y.z).normalized().normal * movement.z
+	direction += Plane(gameplay_camera.basis.x,character_body.basis.y.z).normalized().normal * input_direction.x
+	direction += Plane(gameplay_camera.basis.z,character_body.basis.y.z).normalized().normal * input_direction.y
+
 	direction.y = 0
 
 	direction = direction.normalized()
@@ -150,7 +155,7 @@ func rotate_base(direction: Vector3):
 		movement_rotation_behavior.NONE:
 			pass
 		movement_rotation_behavior.FULL_ROTATION:
-			# Do nothing. The character will rotate in the direction of movement.
+			# Do nothing. The character will rotate in the direction of target_movement.
 			pass
 		movement_rotation_behavior.LEFT_RIGHT_ROTATION:
 			if direction.x != 0:
@@ -179,8 +184,7 @@ func move(direction):
 	if direction.length() > 1:
 		direction = direction.normalized()
 
-	movement.x = direction.x
-	movement.z = direction.y
+	target_movement = direction
 	
 	# print("move: " + str(direction))
 

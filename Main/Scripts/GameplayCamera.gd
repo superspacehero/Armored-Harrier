@@ -1,4 +1,4 @@
-extends Node3D
+extends SpringArm3D
 class_name GameplayCamera
 
 # Camera Variables
