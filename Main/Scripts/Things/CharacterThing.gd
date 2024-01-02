@@ -114,7 +114,14 @@ func _physics_process(delta):
 
 	# Apply horizontal thrust
 	if thrust_amount.x != 0:
-		var thrust_direction = movement_vector if movement_vector.length() > 0 else -character_base.basis.z
+		var thrust_direction = Vector3.ZERO
+		if current_movement.length() == 0:
+			# Default forward direction when there's no movement input
+			thrust_direction = -character_base.basis.z.normalized()
+		else:
+			# Use the movement vector for thrust direction when there is input
+			thrust_direction = calculate_movement_direction(current_movement)
+
 		velocity += thrust_direction * thrust_amount.x * delta
 		if is_in_air() and velocity.y < 0:
 			velocity.y = lerp(velocity.y, 0.0, anti_gravity_smoothness)
@@ -139,19 +146,21 @@ func _process(delta):
 # 3. Movement Functions
 
 func calculate_movement_direction(input_direction: Vector2) -> Vector3:
-	var direction = Vector3.ZERO
+	# Extract the horizontal components of the camera's orientation
+	var forward_horizontal = Vector3(gameplay_camera.global_transform.basis.z.x, 0, gameplay_camera.global_transform.basis.z.z).normalized()
+	var right_horizontal = Vector3(gameplay_camera.global_transform.basis.x.x, 0, gameplay_camera.global_transform.basis.x.z).normalized()
 
-	direction += Plane(gameplay_camera.basis.x,character_body.basis.y.z).normalized().normal * input_direction.x
-	direction += Plane(gameplay_camera.basis.z,character_body.basis.y.z).normalized().normal * input_direction.y
+	# Calculate the movement direction based on the horizontal components
+	var direction = forward_horizontal * input_direction.y + right_horizontal * input_direction.x
 
-	direction.y = 0
-
+	# Maintain the length of the input vector for smoothness
+	# Normalize only if the length is greater than 1 to maintain the original scale of input_direction
 	if direction.length() > 1:
 		direction = direction.normalized()
-	
+
 	if direction.length() > 0.01:
 		rotate_base(direction)
-	
+
 	return direction
 
 func rotate_base(direction: Vector3):
