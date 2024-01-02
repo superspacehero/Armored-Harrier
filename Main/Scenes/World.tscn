@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://d3dnji42fvg0d"]
+[gd_scene load_steps=15 format=3 uid="uid://d3dnji42fvg0d"]
 
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="2_8hthw"]
 [ext_resource type="PackedScene" uid="uid://4ssg4xnbbkyu" path="res://Main/Prefabs/Game Manager.res" id="2_84v2m"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain_detail_layer.gd" id="7_5wocu"]
 [ext_resource type="Texture2D" uid="uid://dscgmq4uec5v8" path="res://Main/Art/Textures/Environment/Foliage/Tree_1.png" id="8_ows7i"]
 [ext_resource type="Texture2D" uid="uid://6jmdwj3vn6m0" path="res://addons/zylann.hterrain/tools/icons/icon_detail_layer_node.svg" id="9_dsoc4"]
+[ext_resource type="ArrayMesh" uid="uid://5qpe0hctnay7" path="res://Main/Art/Models/Environment/Foliage.obj" id="9_o08kv"]
 [ext_resource type="PackedScene" uid="uid://beeb2bpene2nt" path="res://Main/Prefabs/Environment/City/Signage/Sign_Stop.tscn" id="10_dnba2"]
 [ext_resource type="PackedScene" uid="uid://dhb6q8ny1oqii" path="res://Main/Prefabs/Environment/City/Signage/Sign_Traffic.tscn" id="10_iw2yv"]
 [ext_resource type="PackedScene" uid="uid://b8pl1jkovvqsh" path="res://Main/Prefabs/Environment/City/Signage/Sign_Yield.tscn" id="11_wxqkj"]
@@ -17,47 +18,6 @@
 script = ExtResource("4_n0sni")
 mode = 0
 textures = [[ExtResource("5_xbndm"), ExtResource("6_fl03l")], [null, null]]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ih50o"]
-resource_name = "DefaultMaterial"
-vertex_color_use_as_albedo = true
-metallic = 0.2
-roughness = 0.8
-distance_fade_mode = 2
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_kpg5s"]
-_surfaces = [{
-"aabb": AABB(-0.5, -3.06162e-17, -0.5, 1, 1, 1.00001),
-"format": 34359742465,
-"index_count": 24,
-"index_data": PackedByteArray(0, 0, 2, 0, 1, 0, 3, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0, 3, 0, 1, 0, 0, 0, 4, 0, 6, 0, 5, 0, 7, 0, 6, 0, 4, 0, 6, 0, 4, 0, 5, 0, 6, 0, 7, 0, 4, 0),
-"lods": [0.5, PackedByteArray(4, 0, 6, 0, 5, 0, 7, 0, 6, 0, 4, 0, 6, 0, 4, 0, 5, 0, 6, 0, 7, 0, 4, 0)],
-"name": "DefaultMaterial",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray(46, 189, 187, 50, 49, 49, 13, 164, 0, 0, 0, 63, 46, 189, 187, 50, 0, 0, 128, 63, 0, 0, 0, 191, 46, 189, 187, 178, 49, 49, 13, 36, 0, 0, 0, 191, 226, 205, 140, 51, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 128, 63, 46, 189, 59, 51, 0, 0, 0, 63, 0, 0, 128, 63, 46, 189, 59, 51, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0)
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_cgmue"]
-resource_name = "Root Scene_Plane"
-_surfaces = [{
-"aabb": AABB(-0.5, -3.06162e-17, -0.5, 1, 1, 1.00001),
-"attribute_data": PackedByteArray(0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63),
-"format": 34359742487,
-"index_count": 24,
-"index_data": PackedByteArray(0, 0, 2, 0, 1, 0, 3, 0, 0, 0, 1, 0, 4, 0, 6, 0, 5, 0, 7, 0, 6, 0, 4, 0, 8, 0, 10, 0, 9, 0, 11, 0, 10, 0, 8, 0, 12, 0, 14, 0, 13, 0, 12, 0, 15, 0, 14, 0),
-"lods": [0.5, PackedByteArray(8, 0, 10, 0, 9, 0, 11, 0, 10, 0, 8, 0, 12, 0, 14, 0, 13, 0, 12, 0, 15, 0, 14, 0)],
-"material": SubResource("StandardMaterial3D_ih50o"),
-"name": "Tree",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 16,
-"vertex_data": PackedByteArray(46, 189, 187, 50, 49, 49, 13, 164, 0, 0, 0, 63, 46, 189, 187, 50, 0, 0, 128, 63, 0, 0, 0, 191, 46, 189, 187, 178, 49, 49, 13, 36, 0, 0, 0, 191, 226, 205, 140, 51, 0, 0, 128, 63, 0, 0, 0, 63, 46, 189, 187, 50, 49, 49, 13, 164, 0, 0, 0, 63, 46, 189, 187, 178, 49, 49, 13, 36, 0, 0, 0, 191, 46, 189, 187, 50, 0, 0, 128, 63, 0, 0, 0, 191, 226, 205, 140, 51, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 128, 63, 46, 189, 59, 51, 0, 0, 0, 63, 0, 0, 128, 63, 46, 189, 59, 51, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 128, 63, 46, 189, 59, 51, 0, 0, 0, 191, 0, 0, 128, 63, 46, 189, 59, 51, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 127, 0, 0, 255, 255, 0, 0, 255, 127, 0, 0, 255, 255, 0, 0, 255, 127, 0, 0, 255, 255, 0, 0, 255, 127, 0, 0, 255, 255, 255, 255, 255, 127, 0, 0, 255, 255, 255, 255, 255, 127, 0, 0, 255, 255, 255, 255, 255, 127, 0, 0, 255, 255, 255, 255, 255, 127, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 191, 255, 255, 255, 255, 255, 255, 255, 191, 255, 255, 255, 255, 255, 255, 255, 191, 255, 255, 255, 255, 255, 255, 255, 191, 255, 127, 255, 127, 255, 255, 255, 191, 255, 127, 255, 127, 255, 255, 255, 191, 255, 127, 255, 127, 255, 255, 255, 191, 255, 127, 255, 127, 255, 255, 255, 191)
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_kpg5s")
 
 [node name="Node3D" type="Node3D"]
 
@@ -71,6 +31,7 @@ shadow_blur = 0.5
 
 [node name="HTerrain" type="Node3D" parent="."]
 script = ExtResource("2_8hthw")
+ambient_wind = 0.025
 centered = true
 _terrain_data = ExtResource("3_3gvm1")
 chunk_size = 16
@@ -83,25 +44,27 @@ custom_globalmap_shader = null
 texture_set = SubResource("Resource_ty1th")
 render_layers = 1
 cast_shadow = 1
-shader_params/u_ground_uv_scale_per_texture = null
+shader_params/u_ground_uv_scale_per_texture = Vector4(20, 20, 20, 20)
 shader_params/u_depth_blending = true
 shader_params/u_triplanar = false
 shader_params/u_tile_reduction = Vector4(0, 0, 0, 0)
 shader_params/u_globalmap_blend_start = null
 shader_params/u_globalmap_blend_distance = null
-shader_params/u_colormap_opacity_per_texture = null
+shader_params/u_colormap_opacity_per_texture = Vector4(1, 1, 1, 1)
+shader_params/u_specular = 0.5
 
 [node name="HTerrainDetailLayer" type="Node3D" parent="HTerrain"]
 script = ExtResource("7_5wocu")
 texture = ExtResource("8_ows7i")
-density = 0.25
-instance_mesh = SubResource("ArrayMesh_cgmue")
+density = 0.125
+instance_mesh = ExtResource("9_o08kv")
 cast_shadow = 0
-shader_params/u_globalmap_tint_bottom = 0.0
-shader_params/u_globalmap_tint_top = 0.0
-shader_params/u_bottom_ao = 1.0
-shader_params/u_instance_scale = Vector3(3, 3, 3)
-shader_params/u_roughness = 1.0
+_scale_randomness = 0.5
+shader_params/u_globalmap_tint_bottom = null
+shader_params/u_globalmap_tint_top = null
+shader_params/u_bottom_ao = null
+shader_params/u_instance_scale = Vector3(1, 1, 1)
+shader_params/u_roughness = 0.9
 metadata/_editor_icon = ExtResource("9_dsoc4")
 
 [node name="Sign" parent="." instance=ExtResource("10_iw2yv")]

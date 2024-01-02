@@ -35,7 +35,11 @@ var can_use_energy : bool = true
 
 var target_movement : Vector2 = Vector2.ZERO
 var current_movement : Vector2 = Vector2.ZERO
-var air_control_smoothness : float = 0.1  # Control how smoothly the character changes direction in the air
+
+@export_category("Control Smoothing")
+@export var ground_control_smoothness : float = 0.1  # Control how smoothly the character changes direction on the ground
+@export var air_control_smoothness : float = 0.05  # Control how smoothly the character changes direction in the air
+@export var anti_gravity_smoothness : float = 0.1  # Control how smoothly the character changes direction in the air
 
 var jump_input: bool = false
 var is_jumping: bool = false
@@ -83,7 +87,7 @@ func _physics_process(delta):
 	if is_in_air():
 		current_movement = current_movement.lerp(target_movement, air_control_smoothness)
 	else:
-		current_movement = target_movement
+		current_movement = current_movement.lerp(target_movement, ground_control_smoothness)
 
 	var movement_vector = calculate_movement_direction(current_movement)
 
@@ -91,7 +95,7 @@ func _physics_process(delta):
 	velocity.z = movement_vector.z * character_speed
 
 	if character_body.is_on_floor():
-		if thrust_amount.y == 0:
+		if thrust_amount.y == 0 and not jump_input:
 			is_jumping = false
 
 		if can_control != control_level.NONE and can_jump and jump_input and not is_jumping:
@@ -113,7 +117,7 @@ func _physics_process(delta):
 		var thrust_direction = movement_vector if movement_vector.length() > 0 else -character_base.basis.z
 		velocity += thrust_direction * thrust_amount.x * delta
 		if is_in_air() and velocity.y < 0:
-			velocity.y = lerp(velocity.y, 0.0, 0.25)
+			velocity.y = lerp(velocity.y, 0.0, anti_gravity_smoothness)
 
 	character_body.move_and_slide()
 	character_body.velocity = velocity
@@ -142,7 +146,8 @@ func calculate_movement_direction(input_direction: Vector2) -> Vector3:
 
 	direction.y = 0
 
-	direction = direction.normalized()
+	if direction.length() > 1:
+		direction = direction.normalized()
 	
 	if direction.length() > 0.01:
 		rotate_base(direction)
