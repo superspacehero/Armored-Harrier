@@ -5,3 +5,5 @@ func _init():
 	thing_type = "Part"
 
 var character : CharacterThing = null
+
+@export_enum("None", "Left", "Right", "Both") var side : String = "None"

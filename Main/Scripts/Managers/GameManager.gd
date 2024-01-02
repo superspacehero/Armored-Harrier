@@ -1,12 +1,12 @@
 extends Node
 class_name GameManager
 
+static var instance = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	if instance == null:
+		instance = self
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
+@export_category("Object Pools")
+@export var bullet_pool : ObjectPool

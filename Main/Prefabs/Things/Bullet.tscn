@@ -1,0 +1,81 @@
+[gd_scene load_steps=14 format=3 uid="uid://6ys2ybx3v24i"]
+
+[ext_resource type="Texture2D" uid="uid://myo5n5xnuhcp" path="res://Main/Art/Textures/Projectiles/Muzzle Flash.png" id="1_wkyea"]
+[ext_resource type="Script" path="res://Main/Scripts/Things/Parts/Weapon/BulletThing.gd" id="2_u28bx"]
+[ext_resource type="ArrayMesh" uid="uid://csgvx21xkhqk5" path="res://Main/Art/Models/Bullet.obj" id="3_3eii0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxfyb"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+albedo_texture = ExtResource("1_wkyea")
+texture_filter = 0
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_tpxbr"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_53myy"]
+curve = SubResource("Curve_tpxbr")
+
+[sub_resource type="Curve" id="Curve_ke6t5"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_gwt8t"]
+curve = SubResource("Curve_ke6t5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_urg70"]
+angle_max = 360.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.0
+scale_curve = SubResource("CurveTexture_gwt8t")
+alpha_curve = SubResource("CurveTexture_53myy")
+
+[sub_resource type="QuadMesh" id="QuadMesh_2hkar"]
+
+[sub_resource type="Gradient" id="Gradient_hgnqb"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ocx6q"]
+gradient = SubResource("Gradient_hgnqb")
+width = 8
+height = 8
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.55, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f1xvg"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(1, 0.635294, 0.388235, 1)
+albedo_texture = SubResource("GradientTexture2D_ocx6q")
+texture_filter = 0
+
+[node name="Bullet" type="Node3D" node_paths=PackedStringArray("muzzle_flash", "bullet")]
+script = ExtResource("2_u28bx")
+muzzle_flash = NodePath("Muzzle Flash")
+bullet = NodePath("Bullet")
+
+[node name="Muzzle Flash" type="GPUParticles3D" parent="."]
+material_override = SubResource("StandardMaterial3D_yxfyb")
+emitting = false
+lifetime = 0.1
+one_shot = true
+fixed_fps = 60
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_urg70")
+draw_pass_1 = SubResource("QuadMesh_2hkar")
+
+[node name="Bullet" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_f1xvg")
+mesh = ExtResource("3_3eii0")

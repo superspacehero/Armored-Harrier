@@ -4,6 +4,8 @@ class_name ThingSlot
 @export var thing_type: String = ""
 @export var disable_when_in_inventory: bool = false
 
+@export_enum("None", "Left", "Right", "Both") var side : String = "None"
+
 var thing: GameThing = null
 
 func add_thing(thing_to_add: GameThing, set_parent: bool = true) -> void:

@@ -287,6 +287,13 @@ func attach_part(part: CharacterPartThing, parent: ThingSlot):
 		parent.add_thing(part)
 		added_parts.append(part)
 
+		if part.side != "Both":
+			part.side = parent.side
+
+			for slot in part.inventory:
+				if slot is ThingSlot and slot.side == "None":
+					slot.side = parent.side
+
 		part.position = Vector3.ZERO
 		# part.rotation = Vector3.ZERO
 		part.scale = Vector3.ONE
