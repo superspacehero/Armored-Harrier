@@ -14,13 +14,17 @@ func _ready():
 	# print("Final Inventory:", inventory)
 
 # Variables
-var thing_name : String
-var thing_description : String = ""
-var thing_value : int = 0
+@export_category("Variables")
+@export var thing_name : String
+@export var thing_description : String = ""
+@export var thing_value : int = 0
+@export var thing_weight : int = 0
+@export var variables: Dictionary
 
 var thing_type : String
 var thing_subtype : String
 
+@export_category("Inventory")
 @export var inventory_paths : Array[NodePath] = []
 var inventory : Array = []
 
@@ -50,8 +54,6 @@ var health: int = 0:
 		return health
 
 var max_health: int = 100
-
-@export var variables: Dictionary
 
 # Functions
 func _init():
