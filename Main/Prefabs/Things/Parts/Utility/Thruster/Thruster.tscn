@@ -4,3 +4,4 @@
 
 [node name="Thruster" type="Node3D"]
 script = ExtResource("1_jv050")
+thing_weight = 10

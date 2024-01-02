@@ -18,7 +18,7 @@ func _ready():
 @export var thing_name : String
 @export var thing_description : String = ""
 @export var thing_value : int = 0
-@export var thing_weight : int = 0
+@export var thing_weight : int = 5
 @export var variables: Dictionary
 
 var thing_type : String

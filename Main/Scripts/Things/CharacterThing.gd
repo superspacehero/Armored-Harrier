@@ -291,6 +291,10 @@ func attach_part(part: CharacterPartThing, parent: ThingSlot):
 		# part.rotation = Vector3.ZERO
 		part.scale = Vector3.ONE
 
+		# Add the weight of the part to the character.
+		thing_weight += part.thing_weight
+
+		# Merge the variables of the part with the character.
 		variables.merge(part.variables)
 
 		attach_parts_to_part(part)
