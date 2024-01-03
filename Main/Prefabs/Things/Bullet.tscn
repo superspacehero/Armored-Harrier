@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://6ys2ybx3v24i"]
+[gd_scene load_steps=15 format=3 uid="uid://6ys2ybx3v24i"]
 
 [ext_resource type="Texture2D" uid="uid://myo5n5xnuhcp" path="res://Main/Art/Textures/Projectiles/Muzzle Flash.png" id="1_wkyea"]
 [ext_resource type="Script" path="res://Main/Scripts/Things/Parts/Weapon/BulletThing.gd" id="2_u28bx"]
@@ -60,9 +60,13 @@ albedo_color = Color(1, 0.635294, 0.388235, 1)
 albedo_texture = SubResource("GradientTexture2D_ocx6q")
 texture_filter = 0
 
-[node name="Bullet" type="Node3D" node_paths=PackedStringArray("muzzle_flash", "bullet")]
+[sub_resource type="BoxShape3D" id="BoxShape3D_mf32d"]
+size = Vector3(0.1, 0.1, 0.8)
+
+[node name="Bullet" type="Node3D" node_paths=PackedStringArray("muzzle_flash", "bullet_impact", "bullet")]
 script = ExtResource("2_u28bx")
 muzzle_flash = NodePath("Muzzle Flash")
+bullet_impact = NodePath("Bullet Impact")
 bullet = NodePath("Bullet")
 
 [node name="Muzzle Flash" type="GPUParticles3D" parent="."]
@@ -75,7 +79,32 @@ local_coords = true
 process_material = SubResource("ParticleProcessMaterial_urg70")
 draw_pass_1 = SubResource("QuadMesh_2hkar")
 
-[node name="Bullet" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0)
+[node name="Bullet Impact" type="GPUParticles3D" parent="."]
+material_override = SubResource("StandardMaterial3D_yxfyb")
+emitting = false
+lifetime = 0.1
+one_shot = true
+fixed_fps = 60
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_urg70")
+draw_pass_1 = SubResource("QuadMesh_2hkar")
+
+[node name="Bullet" type="RigidBody3D" parent="."]
+input_ray_pickable = false
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+gravity_scale = 0.0
+continuous_cd = true
+contact_monitor = true
+
+[node name="Mesh" type="MeshInstance3D" parent="Bullet"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_f1xvg")
 mesh = ExtResource("3_3eii0")
+skeleton = NodePath("../..")
+
+[node name="Collision" type="CollisionShape3D" parent="Bullet"]
+shape = SubResource("BoxShape3D_mf32d")
+
+[connection signal="body_entered" from="Bullet" to="." method="_on_bullet_body_entered"]

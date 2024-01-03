@@ -29,3 +29,5 @@ func _process(delta):
 			fire_point.add_child(bullet.muzzle_flash)
 			bullet.muzzle_flash.position = Vector3(0, 0, 0)
 			bullet.muzzle_flash.global_scale(Vector3.ONE)
+
+			# bullet.bullet.linear_velocity = bullet.global_basis.z * bullet.bullet_speed
