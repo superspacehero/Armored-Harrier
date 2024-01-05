@@ -8,12 +8,14 @@ var _attacking : bool = false
 var _secondary_attacking : bool = false
 
 func attack(attacking : bool):
-	# print(("Attacking" if attacking else "Not attacking") + " with " + name)
 	_attacking = attacking
+	
+	character.aiming += 1 if attacking else -1
 
 func secondary_attack(attacking : bool):
-	# print(("Attacking" if attacking else "Not attacking") + " with " + name)
 	_secondary_attacking = attacking
+
+	character.aiming += 1 if attacking else -1
 
 func _process(_delta):
 	if _attacking or _secondary_attacking:

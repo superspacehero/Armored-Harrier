@@ -8,8 +8,8 @@ class_name CharacterThing
 @export var character_base : ThingSlot = null
 
 @export_category("Movement")
-@export var character_speed : float = 8  # The speed at which the character moves.
-@export var jump_height: float = 1  # The height of the character's jump.
+@export var move_speed : float = 8  # The speed at which the character moves.
+@export var jump_height: float = 8  # The height of the character's jump.
 @export var jump_offset: float = 0.15  # The offset of the character's jump.
 @export var gravity: float = 100  # The gravity of the character.
 
@@ -29,6 +29,8 @@ enum movement_rotation_behavior { NONE, FULL_ROTATION, LEFT_RIGHT_ROTATION, TOWA
 @export var max_energy : float = 100.0
 @export var energy_bar : ProgressBar
 @export var energy_recovery_rate : float = 20.0
+
+var torsos : Array = []
 
 var energy_consumption_rate : float
 var can_use_energy : bool = true
@@ -91,8 +93,8 @@ func _physics_process(delta):
 
 	var movement_vector = calculate_movement_direction(current_movement)
 
-	velocity.x = movement_vector.x * character_speed
-	velocity.z = movement_vector.z * character_speed
+	velocity.x = movement_vector.x * move_speed
+	velocity.z = movement_vector.z * move_speed
 
 	if character_body.is_on_floor():
 		if thrust_amount.y == 0 and not jump_input:
@@ -140,7 +142,8 @@ func _process(delta):
 			energy += energy_recovery_rate * delta
 	elif energy < max_energy:
 		energy += energy_recovery_rate * delta
-		
+	
+	rotate_torsos(delta)
 	rotate_towards_goto_rotation(delta)
 
 # 3. Movement Functions
@@ -187,6 +190,16 @@ func rotate_base(direction: Vector3):
 	rotation_direction = direction
 	goto_rotation = atan2(rotation_direction.x, rotation_direction.z)
 	# print("goto_rotation: " + str(rad_to_deg(goto_rotation)))
+
+var aiming : int = 0
+
+func rotate_torsos(delta):
+	if aiming > 0:
+		for torso in torsos:
+			torso.rotation.x = lerp_angle(torso.rotation.x, -gameplay_camera.rotation.x, delta / rotation_time)
+	else:
+		for torso in torsos:
+			torso.rotation.x = lerp_angle(torso.rotation.x, 0, delta / rotation_time)
 	
 func rotate_towards_goto_rotation(delta):
 	character_base.rotation.y = lerp_angle(character_base.rotation.y, Vector2(-rotation_direction.z, -rotation_direction.x).angle(), delta / rotation_time)
@@ -273,6 +286,26 @@ func assemble_character(path: String = ""):
 		attach_part_to_slot(character_base)
 
 	thing_top = thing_top
+
+	var _legs : int = 0
+	var _move_speed : float = 0
+	var _jump_height : float = 0
+
+	for part in parts:
+		if part is LegThing:
+			_legs += 1
+			_move_speed += part.move_speed
+			_jump_height += part.jump_height
+
+		if part is TorsoThing:
+			torsos.append(part)
+
+	if _legs > 0:
+		_move_speed /= _legs
+		_jump_height /= _legs
+
+		move_speed = _move_speed
+		jump_height = _jump_height
 
 func clear_previous_parts() -> void:
 	# Clear children from the base.
