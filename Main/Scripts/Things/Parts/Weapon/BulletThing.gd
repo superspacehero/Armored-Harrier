@@ -39,7 +39,7 @@ func _process(delta):
 		self.add_child(muzzle_flash)
 
 func _physics_process(delta) -> void:
-	if bullet.move_and_collide(global_basis.z * bullet_speed * delta):
+	if bullet.process_mode != Node.PROCESS_MODE_DISABLED and bullet.move_and_collide(self.global_basis.z * bullet_speed * delta):
 		set_bullet_active(false)
 		bullet_impact.position = bullet.position
 		bullet_impact.emitting = true
