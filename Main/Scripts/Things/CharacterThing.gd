@@ -36,6 +36,8 @@ var energy_consumption_rate : float
 var can_use_energy : bool = true
 
 var target_movement : Vector2 = Vector2.ZERO
+var override_target_movement : Vector2 = Vector2.ZERO
+
 var current_movement : Vector2 = Vector2.ZERO
 
 @export_category("Control Smoothing")
@@ -87,9 +89,11 @@ func _ready():
 func _physics_process(delta):
 	# Lerp the current movement towards the target movement
 	if is_in_air():
-		current_movement = current_movement.lerp(target_movement, air_control_smoothness)
+		current_movement = current_movement.lerp(target_movement if override_target_movement.length() == 0 else override_target_movement, air_control_smoothness)
 	else:
-		current_movement = current_movement.lerp(target_movement, ground_control_smoothness)
+		current_movement = current_movement.lerp(target_movement if override_target_movement.length() == 0 else override_target_movement, ground_control_smoothness)
+
+	override_target_movement = Vector2.ZERO
 
 	var movement_vector = calculate_movement_direction(current_movement)
 
@@ -117,12 +121,13 @@ func _physics_process(delta):
 	# Apply horizontal thrust
 	if thrust_amount.x != 0:
 		var thrust_direction = Vector3.ZERO
-		if current_movement.length() == 0:
+		if target_movement.length() == 0:
 			# Default forward direction when there's no movement input
-			thrust_direction = -character_base.basis.z.normalized()
-		else:
-			# Use the movement vector for thrust direction when there is input
-			thrust_direction = calculate_movement_direction(current_movement)
+			var character_direction = -character_base.basis.z.normalized()
+			override_target_movement = Vector2(character_direction.x, character_direction.z)
+
+		# Use the movement vector for thrust direction when there is input
+		thrust_direction = calculate_movement_direction(current_movement)
 
 		velocity += thrust_direction * thrust_amount.x * delta
 		if is_in_air() and velocity.y < 0:
