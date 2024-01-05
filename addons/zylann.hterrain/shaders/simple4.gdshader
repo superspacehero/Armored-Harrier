@@ -6,28 +6,28 @@ shader_type spatial;
 
 #include "res://addons/zylann.hterrain/shaders/include/heightmap.gdshaderinc"
 
-uniform sampler2D u_terrain_heightmap;
-uniform sampler2D u_terrain_normalmap;
+uniform sampler2D u_terrain_heightmap : filter_nearest_mipmap;
+uniform sampler2D u_terrain_normalmap : filter_nearest_mipmap;
 // I had to remove `hint_albedo` from colormap in Godot 3 because it makes sRGB conversion kick in,
 // which snowballs to black when doing GPU painting on that texture...
-uniform sampler2D u_terrain_colormap;
-uniform sampler2D u_terrain_splatmap;
-uniform sampler2D u_terrain_globalmap : source_color;
+uniform sampler2D u_terrain_colormap : filter_nearest_mipmap;
+uniform sampler2D u_terrain_splatmap : filter_nearest_mipmap;
+uniform sampler2D u_terrain_globalmap : filter_nearest_mipmap, source_color;
 uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
 
 // the reason bump is preferred with albedo is, roughness looks better with normal maps.
 // If we want no normal mapping, roughness would only give flat mirror surfaces,
 // while bump still allows to do depth-blending for free.
-uniform sampler2D u_ground_albedo_bump_0 : source_color;
-uniform sampler2D u_ground_albedo_bump_1 : source_color;
-uniform sampler2D u_ground_albedo_bump_2 : source_color;
-uniform sampler2D u_ground_albedo_bump_3 : source_color;
+uniform sampler2D u_ground_albedo_bump_0 : filter_nearest_mipmap, source_color;
+uniform sampler2D u_ground_albedo_bump_1 : filter_nearest_mipmap, source_color;
+uniform sampler2D u_ground_albedo_bump_2 : filter_nearest_mipmap, source_color;
+uniform sampler2D u_ground_albedo_bump_3 : filter_nearest_mipmap, source_color;
 
-uniform sampler2D u_ground_normal_roughness_0;
-uniform sampler2D u_ground_normal_roughness_1;
-uniform sampler2D u_ground_normal_roughness_2;
-uniform sampler2D u_ground_normal_roughness_3;
+uniform sampler2D u_ground_normal_roughness_0 : filter_nearest_mipmap;
+uniform sampler2D u_ground_normal_roughness_1 : filter_nearest_mipmap;
+uniform sampler2D u_ground_normal_roughness_2 : filter_nearest_mipmap;
+uniform sampler2D u_ground_normal_roughness_3 : filter_nearest_mipmap;
 
 // Had to give this uniform a suffix, because it's declared as a simple float
 // in other shaders, and its type cannot be inferred by the plugin.

@@ -51,7 +51,7 @@ shader_params/u_tile_reduction = Vector4(0, 0, 0, 0)
 shader_params/u_globalmap_blend_start = null
 shader_params/u_globalmap_blend_distance = null
 shader_params/u_colormap_opacity_per_texture = Vector4(1, 1, 1, 1)
-shader_params/u_specular = 0.5
+shader_params/u_specular = 0.0
 
 [node name="HTerrainDetailLayer" type="Node3D" parent="HTerrain"]
 script = ExtResource("7_5wocu")

@@ -10,7 +10,7 @@ uniform sampler2D u_terrain_globalmap : source_color;
 uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
 
-uniform sampler2D u_albedo_alpha : source_color;
+uniform sampler2D u_albedo_alpha : filter_nearest_mipmap, source_color;
 uniform float u_view_distance = 100.0;
 uniform float u_globalmap_tint_bottom : hint_range(0.0, 1.0);
 uniform float u_globalmap_tint_top : hint_range(0.0, 1.0);
