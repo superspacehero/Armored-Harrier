@@ -23,7 +23,7 @@ func _process(_delta):
 	var weight_ratio = intended_weight / character.thing_weight
 	var adjusted_thrust_power = thrust_power * weight_ratio
 
-	if character.can_use_energy:
+	if character.can_use_energy and (character.target_movement.length() > 0 or thrust_amount.y != 0 or character.is_in_air()):
 		character.thrust_amount = thrust_amount.normalized() * adjusted_thrust_power
 		character.energy_consumption_rate = thrust_amount.normalized().length() * energy_consumption_rate
 	else:

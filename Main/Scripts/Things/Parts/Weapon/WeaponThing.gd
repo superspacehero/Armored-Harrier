@@ -19,4 +19,4 @@ func secondary_attack(attacking : bool):
 
 func _process(_delta):
 	if _attacking or _secondary_attacking:
-		character.rotate_base(-character.gameplay_camera.basis.z)
+		character.rotate_base(-character.aimer.basis.z)

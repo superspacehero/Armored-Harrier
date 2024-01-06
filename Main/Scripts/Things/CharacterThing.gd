@@ -1,10 +1,10 @@
-extends UnsavedThing
+extends TargetableThing
 class_name CharacterThing
 
 # 1. Member Variables/Properties
 
 @export var character_body : CharacterBody3D = null
-@export var gameplay_camera : GameplayCamera
+@export var aimer : Node3D = null
 @export var character_base : ThingSlot = null
 
 @export_category("Movement")
@@ -30,6 +30,32 @@ enum movement_rotation_behavior { NONE, FULL_ROTATION, LEFT_RIGHT_ROTATION, TOWA
 @export var energy_bar : ProgressBar
 @export var energy_recovery_rate : float = 20.0
 
+var target_objects: Array = []
+var targets: Array = []
+
+func add_target(target_object: TargetableThing):
+	if !target_objects.has(target_object):
+		target_objects.append(target_object)
+
+		if aimer is GameplayCamera:
+			var target : FollowWorldPosition = GameManager.instance.target_pool.get_object_from_pool(position)
+			targets.append(target)
+
+			target.get_parent().remove_child(target)
+			aimer.add_child(target)
+
+			target.target = target_object
+
+func remove_target(target_object: TargetableThing):
+	if target_objects.has(target_object):
+		if aimer is GameplayCamera:
+			var index : int = target_objects.find(target_object)
+			var target : FollowWorldPosition = targets[index]
+			targets.erase(index)
+			GameManager.instance.target_pool.return_object_to_pool(target)
+
+		target_objects.erase(target_object)
+
 var torsos : Array = []
 
 var energy_consumption_rate : float
@@ -52,7 +78,8 @@ var thrust_amount : Vector2 = Vector2(0, 0)
 
 var velocity : Vector3 = Vector3.ZERO
 var goto_rotation: float
-var rotation_time: float = 0.25
+@export_category("Rotation")
+@export var rotation_time: float = 0.25
 
 var rotation_direction: Vector3 = Vector3.FORWARD
 
@@ -66,7 +93,8 @@ var energy : float:
 			_energy = max_energy
 			can_use_energy = true
 
-		energy_bar.value = _energy
+		if energy_bar:
+			energy_bar.value = _energy
 	get:
 		return _energy
 var _energy : float
@@ -80,7 +108,9 @@ func _ready():
 	super()
 
 	assemble_character()
-	gameplay_camera.set_camera_object(self, 1, true)
+
+	if aimer is GameplayCamera:
+		aimer.set_camera_object(self, 1, true)
 	character_body.velocity = Vector3.ZERO
 	energy = max_energy
 	
@@ -121,11 +151,6 @@ func _physics_process(delta):
 	# Apply horizontal thrust
 	if thrust_amount.x != 0:
 		var thrust_direction = Vector3.ZERO
-		if target_movement.length() == 0:
-			# Default forward direction when there's no movement input
-			var character_direction = -character_base.basis.z.normalized()
-			override_target_movement = Vector2(character_direction.x, character_direction.z)
-
 		# Use the movement vector for thrust direction when there is input
 		thrust_direction = calculate_movement_direction(current_movement)
 
@@ -155,8 +180,8 @@ func _process(delta):
 
 func calculate_movement_direction(input_direction: Vector2) -> Vector3:
 	# Extract the horizontal components of the camera's orientation
-	var forward_horizontal = Vector3(gameplay_camera.global_transform.basis.z.x, 0, gameplay_camera.global_transform.basis.z.z).normalized()
-	var right_horizontal = Vector3(gameplay_camera.global_transform.basis.x.x, 0, gameplay_camera.global_transform.basis.x.z).normalized()
+	var forward_horizontal = Vector3(aimer.global_transform.basis.z.x, 0, aimer.global_transform.basis.z.z).normalized()
+	var right_horizontal = Vector3(aimer.global_transform.basis.x.x, 0, aimer.global_transform.basis.x.z).normalized()
 
 	# Calculate the movement direction based on the horizontal components
 	var direction = forward_horizontal * input_direction.y + right_horizontal * input_direction.x
@@ -190,7 +215,7 @@ func rotate_base(direction: Vector3):
 			
 			direction.z *= 0.5
 		movement_rotation_behavior.TOWARDS_CAMERA:
-			direction = -gameplay_camera.basis.z
+			direction = -aimer.basis.z
 
 	rotation_direction = direction
 	goto_rotation = atan2(rotation_direction.x, rotation_direction.z)
@@ -200,14 +225,25 @@ var aiming : int = 0
 
 func rotate_torsos(delta):
 	if aiming > 0:
-		for torso in torsos:
-			torso.rotation.x = lerp_angle(torso.rotation.x, -gameplay_camera.rotation.x, delta / rotation_time)
+		if rotation_time > 0:
+			for torso in torsos:
+				torso.rotation.x = lerp_angle(torso.rotation.x, -aimer.rotation.x, delta / rotation_time)
+		else:
+			for torso in torsos:
+				torso.rotation.x = -aimer.rotation.x
 	else:
-		for torso in torsos:
-			torso.rotation.x = lerp_angle(torso.rotation.x, 0, delta / rotation_time)
+		if rotation_time > 0:
+			for torso in torsos:
+				torso.rotation.x = lerp_angle(torso.rotation.x, 0, delta / rotation_time)
+		else:
+			for torso in torsos:
+				torso.rotation.x = 0
 	
 func rotate_towards_goto_rotation(delta):
-	character_base.rotation.y = lerp_angle(character_base.rotation.y, Vector2(-rotation_direction.z, -rotation_direction.x).angle(), delta / rotation_time)
+	if rotation_time > 0:
+		character_base.rotation.y = lerp_angle(character_base.rotation.y, Vector2(-rotation_direction.z, -rotation_direction.x).angle(), delta / rotation_time)
+	else:
+		character_base.rotation.y = Vector2(-rotation_direction.z, -rotation_direction.x).angle()
 
 # 4. Event Handling Functions
 
@@ -221,7 +257,7 @@ func move(direction):
 	# print("move: " + str(direction))
 
 func aim(direction):
-	gameplay_camera.camera_rotation_amount = direction
+	aimer.camera_rotation_amount = direction
 	
 func primary(pressed):
 	for part in parts:

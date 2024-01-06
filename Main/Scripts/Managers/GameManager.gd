@@ -10,3 +10,4 @@ func _ready():
 
 @export_category("Object Pools")
 @export var bullet_pool : ObjectPool
+@export var target_pool : ObjectPool

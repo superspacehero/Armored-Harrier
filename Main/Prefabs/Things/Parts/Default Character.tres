@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterInfo" load_steps=9 format=3 uid="uid://dnsvol1j6j58r"]
+[gd_resource type="Resource" script_class="CharacterInfo" load_steps=10 format=3 uid="uid://dnsvol1j6j58r"]
 
 [ext_resource type="PackedScene" uid="uid://cieup7pci776r" path="res://Main/Prefabs/Things/Parts/Body/Pelvis/Pelvis.res" id="1_u0pxu"]
 [ext_resource type="Script" path="res://Main/Scripts/Things/CharacterInfo.gd" id="1_yaj72"]
@@ -8,13 +8,14 @@
 [ext_resource type="PackedScene" uid="uid://bleavieb0bm8r" path="res://Main/Prefabs/Things/Parts/Body/Head/Head.res" id="5_32i6s"]
 [ext_resource type="PackedScene" uid="uid://ctw4dmvq17srl" path="res://Main/Prefabs/Things/Parts/Weapon/Handheld/Handgun.res" id="6_buxsj"]
 [ext_resource type="PackedScene" uid="uid://dd020m2amkbf0" path="res://Main/Prefabs/Things/Parts/Utility/Thruster/Thruster.tscn" id="7_ylcsv"]
+[ext_resource type="PackedScene" uid="uid://rvt3ofdp4rla" path="res://Main/Prefabs/Things/Parts/Utility/Targeter/Targeter.tscn" id="8_cqr3x"]
 
 [resource]
 script = ExtResource("1_yaj72")
 name = "Default Character"
 description = "The default character."
 value = 0
-character_parts = Array[PackedScene]([ExtResource("1_u0pxu"), ExtResource("2_inru0"), ExtResource("3_35gbr"), ExtResource("3_35gbr"), ExtResource("4_qyxb0"), ExtResource("4_qyxb0"), ExtResource("5_32i6s"), ExtResource("6_buxsj"), ExtResource("6_buxsj"), ExtResource("7_ylcsv")])
+character_parts = Array[PackedScene]([ExtResource("1_u0pxu"), ExtResource("2_inru0"), ExtResource("3_35gbr"), ExtResource("3_35gbr"), ExtResource("4_qyxb0"), ExtResource("4_qyxb0"), ExtResource("5_32i6s"), ExtResource("6_buxsj"), ExtResource("6_buxsj"), ExtResource("7_ylcsv"), ExtResource("8_cqr3x")])
 variables = {
 "energy": 100,
 "health": 100

@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://cccy0fh22j13e"]
+
+[ext_resource type="Script" path="res://Main/Scripts/Things/TargetableThing.gd" id="1_53e84"]
+[ext_resource type="Texture2D" uid="uid://brxkjufu1brgf" path="res://Main/Art/Textures/Environment/City/Oil_Drum.png" id="1_eslyt"]
+[ext_resource type="ArrayMesh" uid="uid://dup6h0spvp5w2" path="res://Main/Art/Models/Environment/City/Oil_Drum.obj" id="2_jwt3v"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j8ie0"]
+resource_name = "OilDrum"
+albedo_texture = ExtResource("1_eslyt")
+metallic = 0.5
+texture_filter = 0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_j6unb"]
+height = 0.438
+radius = 0.146
+
+[node name="Oil Barrel" type="RigidBody3D"]
+mass = 189.0
+script = ExtResource("1_53e84")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_j8ie0")
+mesh = ExtResource("2_jwt3v")
+skeleton = NodePath("../..")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_j6unb")

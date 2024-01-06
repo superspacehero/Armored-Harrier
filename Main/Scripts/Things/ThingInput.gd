@@ -1,4 +1,4 @@
-extends UnsavedThing
+extends TargetableThing
 class_name ThingInput
 
 var input

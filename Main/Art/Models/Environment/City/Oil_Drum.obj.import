@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dup6h0spvp5w2"
+path="res://.godot/imported/Oil_Drum.obj-b54171b8aec0f6cb3433d749a5aea4ec.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Oil_Drum.obj-b54171b8aec0f6cb3433d749a5aea4ec.mesh"]
+
+source_file="res://Main/Art/Models/Environment/City/Oil_Drum.obj"
+dest_files=["res://.godot/imported/Oil_Drum.obj-b54171b8aec0f6cb3433d749a5aea4ec.mesh", "res://.godot/imported/Oil_Drum.obj-b54171b8aec0f6cb3433d749a5aea4ec.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

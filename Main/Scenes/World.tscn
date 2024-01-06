@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d3dnji42fvg0d"]
+[gd_scene load_steps=16 format=3 uid="uid://d3dnji42fvg0d"]
 
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="2_8hthw"]
 [ext_resource type="PackedScene" uid="uid://4ssg4xnbbkyu" path="res://Main/Prefabs/Game Manager.res" id="2_84v2m"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://beeb2bpene2nt" path="res://Main/Prefabs/Environment/City/Signage/Sign_Stop.tscn" id="10_dnba2"]
 [ext_resource type="PackedScene" uid="uid://dhb6q8ny1oqii" path="res://Main/Prefabs/Environment/City/Signage/Sign_Traffic.tscn" id="10_iw2yv"]
 [ext_resource type="PackedScene" uid="uid://b8pl1jkovvqsh" path="res://Main/Prefabs/Environment/City/Signage/Sign_Yield.tscn" id="11_wxqkj"]
+[ext_resource type="PackedScene" uid="uid://cccy0fh22j13e" path="res://Main/Prefabs/Things/Oil Barrel.tscn" id="14_4txco"]
 
 [sub_resource type="Resource" id="Resource_ty1th"]
 script = ExtResource("4_n0sni")
@@ -24,8 +25,6 @@ textures = [[ExtResource("5_xbndm"), ExtResource("6_fl03l")], [null, null]]
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0.457835, -0.485786, 0.74458, -0.200966, 0.759284, 0.618952, 0, 0, 0)
 shadow_enabled = true
-shadow_transmittance_bias = 0.0
-shadow_blur = 0.5
 
 [node name="Game Manager" parent="." instance=ExtResource("2_84v2m")]
 
@@ -64,7 +63,7 @@ shader_params/u_globalmap_tint_bottom = null
 shader_params/u_globalmap_tint_top = null
 shader_params/u_bottom_ao = null
 shader_params/u_instance_scale = Vector3(1, 1, 1)
-shader_params/u_roughness = 0.9
+shader_params/u_roughness = 1.0
 metadata/_editor_icon = ExtResource("9_dsoc4")
 
 [node name="Sign" parent="." instance=ExtResource("10_iw2yv")]
@@ -75,5 +74,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.1392, -2.26516, -3.43149)
 
 [node name="Sign3" parent="." instance=ExtResource("10_dnba2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.9188, -2.28171, -3.91501)
+
+[node name="Oil Barrel" parent="." instance=ExtResource("14_4txco")]
 
 [editable path="Game Manager"]

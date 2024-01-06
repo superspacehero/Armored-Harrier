@@ -1,0 +1,58 @@
+[gd_scene load_steps=7 format=3 uid="uid://rvt3ofdp4rla"]
+
+[ext_resource type="Script" path="res://Main/Scripts/Things/Parts/Utility/TargeterThing.gd" id="1_k40c3"]
+
+[sub_resource type="Gradient" id="Gradient_if2c3"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.9, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_v45fy"]
+gradient = SubResource("Gradient_if2c3")
+width = 128
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iitvy"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+depth_draw_mode = 1
+no_depth_test = true
+shading_mode = 0
+specular_mode = 2
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(0, 1, 0, 1)
+albedo_texture = SubResource("GradientTexture2D_v45fy")
+texture_filter = 0
+texture_repeat = false
+disable_receive_shadows = true
+distance_fade_max_distance = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_w426u"]
+flip_faces = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k5yfj"]
+size = Vector3(9, 4.5, 24)
+
+[node name="Targeter" type="Node3D"]
+script = ExtResource("1_k40c3")
+
+[node name="Target" type="Area3D" parent="."]
+input_ray_pickable = false
+
+[node name="Mesh" type="MeshInstance3D" parent="Target"]
+transform = Transform3D(9, 0, 0, 0, 4.5, 0, 0, 0, 1, 0, 0, 4)
+material_override = SubResource("StandardMaterial3D_iitvy")
+cast_shadow = 0
+gi_mode = 0
+mesh = SubResource("QuadMesh_w426u")
+
+[node name="Collision" type="CollisionShape3D" parent="Target"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+shape = SubResource("BoxShape3D_k5yfj")
+
+[connection signal="body_entered" from="Target" to="." method="_on_target_body_entered"]
+[connection signal="body_exited" from="Target" to="." method="_on_target_body_exited"]
+[connection signal="body_shape_entered" from="Target" to="." method="_on_target_body_shape_entered"]

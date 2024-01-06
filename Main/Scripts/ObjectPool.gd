@@ -19,11 +19,14 @@ func get_object_from_pool(object_position: Vector3) -> Node:
 	if component == null:
 		var obj = object_scene.instantiate()
 		object_parent.add_child(obj)  # Instead of self.add_child(obj)
-		obj.global_position = object_position
+
+		if obj is Node3D:
+			obj.global_position = object_position
 		object_pool.append(obj)
 		component = obj
 
-	component.global_position = object_position
+	if component is Node3D:
+		component.global_position = object_position
 
 	component.visible = true
 	component.process_mode = Node.PROCESS_MODE_INHERIT
