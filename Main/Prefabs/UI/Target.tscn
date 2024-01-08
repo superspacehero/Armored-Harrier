@@ -1,17 +1,17 @@
 [gd_scene load_steps=4 format=3 uid="uid://b6yc4a0hwrlp6"]
 
-[ext_resource type="Script" path="res://Main/Scripts/UI/FollowWorldPosition.gd" id="1_34og6"]
+[ext_resource type="Script" path="res://Main/Scripts/UI/Target.gd" id="1_wiqfx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_38eyi"]
 content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
-bg_color = Color(0, 0, 0, 0)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 border_color = Color(0, 1, 0, 1)
 corner_detail = 1
 shadow_color = Color(0, 0, 0, 0)
@@ -20,7 +20,7 @@ anti_aliasing = false
 [sub_resource type="Theme" id="Theme_8qj0h"]
 Panel/styles/panel = SubResource("StyleBoxFlat_38eyi")
 
-[node name="Target" type="Control"]
+[node name="Target" type="Control" node_paths=PackedStringArray("panel")]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -33,15 +33,33 @@ offset_right = 32.0
 offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_34og6")
+script = ExtResource("1_wiqfx")
+panel = NodePath("Panel")
+unselected_dimensions = Vector4(-0.125, -0.125, 0.125, 0.125)
+selected_dimensions = Vector4(-0.25, -0.25, 0.25, 0.25)
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.5
-anchor_top = -0.5
+anchor_left = -0.125
+anchor_top = -0.125
+anchor_right = 0.125
+anchor_bottom = 0.125
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_8qj0h")
+
+[node name="Center" type="Panel" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_8qj0h")

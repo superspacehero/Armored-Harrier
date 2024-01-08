@@ -43,7 +43,7 @@ script = ExtResource("1_k40c3")
 input_ray_pickable = false
 
 [node name="Mesh" type="MeshInstance3D" parent="Target"]
-transform = Transform3D(9, 0, 0, 0, 4.5, 0, 0, 0, 1, 0, 0, 4)
+transform = Transform3D(9, 0, 0, 0, 4.5, 0, 0, 0, 1, 0, 0, 2)
 material_override = SubResource("StandardMaterial3D_iitvy")
 cast_shadow = 0
 gi_mode = 0

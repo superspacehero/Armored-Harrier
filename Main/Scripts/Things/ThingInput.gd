@@ -1,4 +1,4 @@
-extends TargetableThing
+extends GameThing
 class_name ThingInput
 
 var input
@@ -80,6 +80,20 @@ var quaternary_action: bool = false:
 				game_thing.quaternary(value)
 			quaternary_action = value
 
+var previous_target_action: bool = false:
+	set(value):
+		if value != previous_target_action:
+			for game_thing in inventory:
+				game_thing.previous_target(value)
+			previous_target_action = value
+
+var next_target_action: bool = false:
+	set(value):
+		if value != next_target_action:
+			for game_thing in inventory:
+				game_thing.next_target(value)
+			next_target_action = value
+
 var pause_action: bool = false:
 	set(value):
 		if value != pause_action:
@@ -96,6 +110,10 @@ func _input(event):
 		
 		left_trigger_action = input.is_action_pressed("left_trigger")
 		right_trigger_action = input.is_action_pressed("right_trigger")
+
+		previous_target_action = input.is_action_pressed("previous_target")
+		next_target_action = input.is_action_pressed("next_target")
+
 		primary_action = input.is_action_pressed("primary")
 		secondary_action = input.is_action_pressed("secondary")
 		tertiary_action = input.is_action_pressed("tertiary")

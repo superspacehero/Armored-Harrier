@@ -23,7 +23,11 @@ func _process(delta):
 			bullet_timer = 0
 
 			var bullet: BulletThing = GameManager.instance.bullet_pool.get_object_from_pool(fire_point.global_position)
-			bullet.rotation = global_rotation
+
+			if character.target:
+				bullet.look_at(character.target.global_position, Vector3.UP, true)
+			else:
+				bullet.rotation = global_rotation
 
 			bullet.muzzle_flash.get_parent().remove_child(bullet.muzzle_flash)
 			fire_point.add_child(bullet.muzzle_flash)

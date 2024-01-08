@@ -25,3 +25,9 @@ func _process(_delta):
 func move():
 	if target and camera:
 		position = camera.camera.unproject_position(target.position.lerp(target.thing_top.position, follow_height))
+	elif camera:
+		print("FollowWorldPosition: No target")
+	elif target:
+		print("FollowWorldPosition: No camera")
+	else:
+		print("FollowWorldPosition: No target or camera")

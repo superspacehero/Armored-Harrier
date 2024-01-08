@@ -89,5 +89,11 @@ func left_trigger(_pressed):
 func right_trigger(_pressed):
 	pass
 
+func previous_target(_pressed):
+	pass
+
+func next_target(_pressed):
+	pass
+
 func pause(_pressed):
 	pass

@@ -30,31 +30,80 @@ enum movement_rotation_behavior { NONE, FULL_ROTATION, LEFT_RIGHT_ROTATION, TOWA
 @export var energy_bar : ProgressBar
 @export var energy_recovery_rate : float = 20.0
 
-var target_objects: Array = []
 var targets: Array = []
+var target: TargetableThing = null
+
+func sort_targets():
+	targets.sort_custom(_sort_targets_left_to_right)
+
+func _sort_targets_left_to_right(a: Target, b: Target) -> int:
+	return int(a.position.x < b.position.x)
+
+func cycle_target(direction: int):
+	if targets.size() == 0:
+		return
+
+	sort_targets()
+
+	var index = find_target_index(target)
+	index = (index + direction) % targets.size()
+	set_target(targets[index].target)
+
+func find_target(target_object: TargetableThing) -> Target:
+	for _target in targets:
+		if _target.target == target_object:
+			return _target
+	return null
+
+func find_target_index(target_object: TargetableThing) -> int:
+	for i in range(targets.size()):
+		if targets[i].target == target_object:
+			return i
+	return -1
+
+func set_target(new_target: TargetableThing):
+	target = new_target
+	set_targets_selected()
+
+func set_targets_selected():
+	for _target in targets:
+		(_target as Target).selected = _target.target == target
 
 func add_target(target_object: TargetableThing):
-	if !target_objects.has(target_object):
-		target_objects.append(target_object)
+	if find_target(target_object):
+		return
 
-		if aimer is GameplayCamera:
-			var target : FollowWorldPosition = GameManager.instance.target_pool.get_object_from_pool(position)
-			targets.append(target)
+	if aimer is GameplayCamera:
+		var _target: FollowWorldPosition = GameManager.instance.target_pool.get_object_from_pool(position)
+		_target.camera = (aimer as GameplayCamera)
+		targets.append(_target)
+		_target.get_parent().remove_child(_target)
+		aimer.add_child(_target)
+		_target.target = target_object
 
-			target.get_parent().remove_child(target)
-			aimer.add_child(target)
+	if not target:
+		set_target(target_object)
 
-			target.target = target_object
+	set_targets_selected()
+	sort_targets()
 
 func remove_target(target_object: TargetableThing):
-	if target_objects.has(target_object):
-		if aimer is GameplayCamera:
-			var index : int = target_objects.find(target_object)
-			var target : FollowWorldPosition = targets[index]
-			targets.erase(index)
-			GameManager.instance.target_pool.return_object_to_pool(target)
+	if not find_target(target_object):
+		return
 
-		target_objects.erase(target_object)
+	if aimer is GameplayCamera:
+		var index = find_target_index(target_object)
+		var _target = targets[index]
+		targets.erase(_target)
+		GameManager.instance.target_pool.return_object_to_pool(_target)
+
+	if target == target_object:
+		target = null if targets.size() == 0 else targets[0].target
+
+	targets.erase(find_target(target_object))
+
+	set_targets_selected()
+	sort_targets()
 
 var torsos : Array = []
 
@@ -215,35 +264,58 @@ func rotate_base(direction: Vector3):
 			
 			direction.z *= 0.5
 		movement_rotation_behavior.TOWARDS_CAMERA:
-			direction = -aimer.basis.z
+			direction = aimer.basis.z
 
 	rotation_direction = direction
 	goto_rotation = atan2(rotation_direction.x, rotation_direction.z)
 	# print("goto_rotation: " + str(rad_to_deg(goto_rotation)))
 
-var aiming : int = 0
+var aiming : int:
+	set(new_value):
+		aiming = max(new_value, 0)  # Ensure aiming does not go below 0
 
 func rotate_torsos(delta):
-	if aiming > 0:
+	for torso in torsos:
+		var target_angle = 0.0
+		if target:
+			# Calculate the direction to the target in the torso's local space
+			var local_target_pos = -character_base.to_local(target.global_position + (character_base.global_position - torso.global_position))
+			target_angle = atan2(local_target_pos.y, local_target_pos.z)
+
+			# Adjust the angle to prevent the torso from flipping upside down
+			# target_angle = min(PI/2, max(-PI/2, target_angle))
+
+		elif aiming > 0:
+			target_angle = -aimer.rotation.x
+			target_angle = clamp(target_angle, -PI/2, PI/2)
+
+		# Apply the rotation
 		if rotation_time > 0:
-			for torso in torsos:
-				torso.rotation.x = lerp_angle(torso.rotation.x, -aimer.rotation.x, delta / rotation_time)
+			torso.rotation.x = lerp_angle(torso.rotation.x, target_angle, delta / rotation_time)
 		else:
-			for torso in torsos:
-				torso.rotation.x = -aimer.rotation.x
-	else:
-		if rotation_time > 0:
-			for torso in torsos:
-				torso.rotation.x = lerp_angle(torso.rotation.x, 0, delta / rotation_time)
-		else:
-			for torso in torsos:
-				torso.rotation.x = 0
+			torso.rotation.x = target_angle
 	
+@export var aiming_angle_threshold : float = 60.0  # Degrees
+
 func rotate_towards_goto_rotation(delta):
-	if rotation_time > 0:
-		character_base.rotation.y = lerp_angle(character_base.rotation.y, Vector2(-rotation_direction.z, -rotation_direction.x).angle(), delta / rotation_time)
+	if target:
+		rotate_towards_target()
+
+	character_base.rotation.y = lerp_angle(character_base.rotation.y, goto_rotation, delta / rotation_time)
+
+func rotate_towards_target():
+	var torso_forward = character_base.global_transform.basis.z.normalized()
+	var camera_forward = aimer.global_transform.basis.z.normalized()
+
+	var dot_product = torso_forward.dot(camera_forward)
+	var angle_diff_rad = acos(clamp(dot_product, -1.0, 1.0))
+	var angle_diff_deg = rad_to_deg(angle_diff_rad)
+
+	if angle_diff_deg <= aiming_angle_threshold:
+		var target_direction = (character_base.global_position - target.global_position).normalized()
+		goto_rotation = atan2(target_direction.x, target_direction.z)
 	else:
-		character_base.rotation.y = Vector2(-rotation_direction.z, -rotation_direction.x).angle()
+		target = null
 
 # 4. Event Handling Functions
 
@@ -288,6 +360,14 @@ func right_trigger(pressed):
 	for part in parts:
 		if part is CharacterPartThing:
 			part.right_trigger(pressed)
+
+func previous_target(pressed):
+	if pressed:
+		cycle_target(-1)
+
+func next_target(pressed):
+	if pressed:
+		cycle_target(1)
 
 func pause(_pressed):
 	pass

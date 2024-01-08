@@ -76,5 +76,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.1392, -2.26516, -3.43149)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.9188, -2.28171, -3.91501)
 
 [node name="Oil Barrel" parent="." instance=ExtResource("14_4txco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, -3)
+
+[node name="Oil Barrel2" parent="." instance=ExtResource("14_4txco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.541243, -2, -3)
+
+[node name="Oil Barrel4" parent="." instance=ExtResource("14_4txco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.04875, -2, -3)
+
+[node name="Oil Barrel3" parent="." instance=ExtResource("14_4txco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.549091, -2, -3)
 
 [editable path="Game Manager"]
