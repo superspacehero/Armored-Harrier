@@ -3,7 +3,6 @@ class_name GameThing
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	max_health = variables.get("health", 100)
 	health = max_health
 	
 	for path in inventory_paths:
@@ -53,7 +52,10 @@ var health: int = 0:
 	get:
 		return health
 
-var max_health: int = 100
+@export var max_health: int = 10
+
+func damage(amount):
+	health -= amount
 
 # Functions
 func _init():

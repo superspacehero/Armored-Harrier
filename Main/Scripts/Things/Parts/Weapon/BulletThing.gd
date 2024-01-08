@@ -7,6 +7,8 @@ func _init():
 @export var life = 1.0
 var life_timer = 0.0
 
+@export var damage_amount = 1
+
 @export_category("Effects")
 @export var muzzle_flash : GPUParticles3D
 @export var bullet_impact : GPUParticles3D
@@ -39,7 +41,18 @@ func _process(delta):
 		self.add_child(muzzle_flash)
 
 func _physics_process(delta) -> void:
-	if bullet.process_mode != Node.PROCESS_MODE_DISABLED and bullet.move_and_collide(self.global_basis.z * bullet_speed * delta):
+	var collision : KinematicCollision3D = bullet.move_and_collide(self.global_basis.z * bullet_speed * delta)
+	if collision and bullet.process_mode != Node.PROCESS_MODE_DISABLED:
 		set_bullet_active(false)
 		bullet_impact.position = bullet.position
 		bullet_impact.emitting = true
+
+		# Damage the thing we hit
+		var collider_thing = collision.get_collider()
+		
+		while collider_thing:
+			if collider_thing is GameThing:
+				var game_thing : GameThing = collider_thing as GameThing
+				game_thing.damage(damage_amount)
+				break
+			collider_thing = collider_thing.get_parent()
