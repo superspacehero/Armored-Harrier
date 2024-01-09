@@ -24,7 +24,7 @@ func _process(delta):
 
 			var bullet: BulletThing = GameManager.instance.bullet_pool.get_object_from_pool(fire_point.global_position)
 
-			if character.target:
+			if character.target != null:
 				bullet.look_at(character.target.global_position, Vector3.UP, true)
 			else:
 				bullet.rotation = global_rotation

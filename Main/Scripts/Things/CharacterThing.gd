@@ -43,11 +43,21 @@ func cycle_target(direction: int):
 	if targets.size() == 0:
 		return
 
+	# Ensure targets are sorted before cycling
 	sort_targets()
 
-	var index = find_target_index(target)
-	index = (index + direction) % targets.size()
-	set_target(targets[index].target)
+	# Check if the current target is still valid
+	if is_instance_valid(target):
+		var index = find_target_index(target)
+		# Calculate new index, making sure it's within the array bounds
+		index = (index + direction + targets.size()) % targets.size()
+		set_target(targets[index].target)
+	else:
+		# If current target is not valid, select a new target if available
+		if targets.size() > 0:
+			set_target(targets[0].target)
+		else:
+			target = null
 
 func find_target(target_object: TargetableThing) -> Target:
 	for _target in targets:
@@ -56,6 +66,9 @@ func find_target(target_object: TargetableThing) -> Target:
 	return null
 
 func find_target_index(target_object: TargetableThing) -> int:
+	if not is_instance_valid(target_object):
+		return -1
+
 	for i in range(targets.size()):
 		if targets[i].target == target_object:
 			return i
@@ -88,22 +101,39 @@ func add_target(target_object: TargetableThing):
 	sort_targets()
 
 func remove_target(target_object: TargetableThing):
-	if not find_target(target_object):
+	if not is_instance_valid(target_object) or not find_target(target_object):
 		return
+
+	var removed_target_index = -1
 
 	if aimer is GameplayCamera:
 		var index = find_target_index(target_object)
 		var _target = targets[index]
 		targets.erase(_target)
 		GameManager.instance.target_pool.return_object_to_pool(_target)
+		removed_target_index = index
 
 	if target == target_object:
-		target = null if targets.size() == 0 else targets[0].target
+		target = null  # Clear the current target as it's being removed
 
 	targets.erase(find_target(target_object))
-
 	set_targets_selected()
 	sort_targets()
+
+	# Set to next nearest target if the current target was removed
+	if removed_target_index != -1:
+		set_to_nearest_target(removed_target_index)
+
+func set_to_nearest_target(removed_index: int):
+	if targets.size() == 0:
+		return  # No targets to set
+
+	if removed_index >= targets.size():
+		# If the removed target was the last in the list
+		set_target(targets[targets.size() - 1].target)
+	else:
+		# Otherwise, set to the target at the current index
+		set_target(targets[removed_index].target)
 
 var torsos : Array = []
 
@@ -214,6 +244,8 @@ func is_in_air() -> bool:
 	return !character_body.is_on_floor() and is_jumping
 
 func _process(delta):
+	validate_targets()  # Validate targets each frame
+
 	if can_use_energy:
 		if energy_consumption_rate > 0:
 			energy -= energy_consumption_rate * delta
@@ -221,9 +253,39 @@ func _process(delta):
 			energy += energy_recovery_rate * delta
 	elif energy < max_energy:
 		energy += energy_recovery_rate * delta
-	
+
 	rotate_torsos(delta)
 	rotate_towards_goto_rotation(delta)
+
+func validate_targets():
+	# Check if the current target is still valid
+	if not is_instance_valid(target):
+		target = null
+		if targets.size() > 0:
+			set_target(targets[0].target)
+		return
+
+	var current_target_index = find_target_index(target)
+	var target_removed = false
+
+	for i in range(targets.size() - 1, -1, -1):
+		var _target = targets[i]
+		if not is_instance_valid(_target.target):
+			GameManager.instance.target_pool.return_object_to_pool(_target)
+			targets.pop_at(i)
+			if i == current_target_index:
+				target_removed = true
+
+	if target_removed:
+		switch_to_next_target(current_target_index)
+
+func switch_to_next_target(removed_index: int):
+	if targets.size() == 0:
+		target = null
+		return
+
+	var new_target_index = removed_index % targets.size()  # Ensure index is within bounds
+	set_target(targets[new_target_index].target)
 
 # 3. Movement Functions
 
@@ -277,7 +339,7 @@ var aiming : int:
 func rotate_torsos(delta):
 	for torso in torsos:
 		var target_angle = 0.0
-		if target:
+		if target and is_instance_valid(target):
 			# Calculate the direction to the target in the torso's local space
 			var local_target_pos = -character_base.to_local(target.global_position + (character_base.global_position - torso.global_position))
 			target_angle = atan2(local_target_pos.y, local_target_pos.z)
@@ -298,7 +360,7 @@ func rotate_torsos(delta):
 @export var aiming_angle_threshold : float = 60.0  # Degrees
 
 func rotate_towards_goto_rotation(delta):
-	if target:
+	if target and is_instance_valid(target):
 		rotate_towards_target()
 
 	character_base.rotation.y = lerp_angle(character_base.rotation.y, goto_rotation, delta / rotation_time)

@@ -63,9 +63,10 @@ func _init():
 	thing_subtype = "Game"
 
 func die():
-	print("Dying!")
 	# Destroy self
-	queue_free()
+	if !is_queued_for_deletion():
+		print("Dying!")
+		queue_free()
 
 func move(_direction):
 	pass

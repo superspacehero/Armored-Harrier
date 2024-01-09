@@ -30,6 +30,9 @@ func _ready():
 	
 	set_bullet_active(true)
 
+func die():
+	pass
+
 func _process(delta):
 	life_timer += delta
 	if life_timer > life:
@@ -40,7 +43,7 @@ func _process(delta):
 		muzzle_flash.get_parent().remove_child(muzzle_flash)
 		self.add_child(muzzle_flash)
 
-func _physics_process(delta) -> void:
+func _physics_process(delta):
 	var collision : KinematicCollision3D = bullet.move_and_collide(self.global_basis.z * bullet_speed * delta)
 	if collision and bullet.process_mode != Node.PROCESS_MODE_DISABLED:
 		set_bullet_active(false)

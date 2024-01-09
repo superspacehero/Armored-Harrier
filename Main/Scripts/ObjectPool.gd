@@ -12,7 +12,7 @@ func _init():
 func get_object_from_pool(object_position: Vector3) -> Node: 
 	var component = null
 	for pooled_object in object_pool:
-		if pooled_object.process_mode == Node.PROCESS_MODE_DISABLED:
+		if !pooled_object.is_queued_for_deletion() and pooled_object.process_mode == Node.PROCESS_MODE_DISABLED:
 			component = pooled_object
 			break
 

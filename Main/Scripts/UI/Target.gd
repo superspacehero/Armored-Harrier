@@ -20,3 +20,9 @@ var selected : bool:
 			panel.anchor_right = unselected_dimensions.z
 			panel.anchor_bottom = unselected_dimensions.w
 		selected = value
+
+func _process(delta):
+	super._process(delta)
+
+	if target == null:
+		GameManager.instance.target_pool.return_object_to_pool(self)
