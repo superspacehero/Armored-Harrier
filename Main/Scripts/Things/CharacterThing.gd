@@ -4,6 +4,7 @@ class_name CharacterThing
 # 1. Member Variables/Properties
 
 @export var character_body : CharacterBody3D = null
+@export var character_collision : CollisionShape3D = null
 @export var aimer : Node3D = null
 @export var character_base : ThingSlot = null
 
@@ -11,7 +12,7 @@ class_name CharacterThing
 @export var move_speed : float = 8  # The speed at which the character moves.
 @export var jump_height: float = 8  # The height of the character's jump.
 @export var jump_offset: float = 0.15  # The offset of the character's jump.
-@export var gravity: float = 100  # The gravity of the character.
+@export var gravity: float = 50  # The gravity of the character.
 
 @onready var jump_full_height: float = jump_height + jump_offset
 @onready var jump_velocity: float = sqrt(2 * gravity * jump_full_height)
@@ -473,12 +474,15 @@ func assemble_character(path: String = ""):
 	var _legs : int = 0
 	var _move_speed : float = 0
 	var _jump_height : float = 0
+	var _thing_bottoms : Array = []
 
 	for part in parts:
 		if part is LegThing:
 			_legs += 1
 			_move_speed += part.move_speed
 			_jump_height += part.jump_height
+			
+			_thing_bottoms.append(part.thing_bottom)
 
 		if part is TorsoThing:
 			torsos.append(part)
@@ -489,6 +493,19 @@ func assemble_character(path: String = ""):
 
 		move_speed = _move_speed
 		jump_height = _jump_height
+
+		var average_thing_bottom : Vector3 = Vector3.ZERO
+		# Get the average position of all the thing bottoms.
+		for _thing_bottom in _thing_bottoms:
+			average_thing_bottom += _thing_bottom.global_position
+		average_thing_bottom /= _thing_bottoms.size()
+
+		# Set the position of the thing bottom to the average position.
+		thing_bottom.global_position = average_thing_bottom
+
+	# Set the height of the character's collision shape to match the height between the thing top and thing bottom.
+	var height = thing_top.global_position.y - thing_bottom.global_position.y
+	(character_collision.shape as CapsuleShape3D).height = height
 
 func clear_previous_parts() -> void:
 	# Clear children from the base.

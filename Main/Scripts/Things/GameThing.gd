@@ -27,19 +27,33 @@ var thing_subtype : String
 @export var inventory_paths : Array[NodePath] = []
 var inventory : Array = []
 
-var thing_top: Node3D = null:
+@export var thing_top: Node3D = null:
 	get:
 		if thing_top == null:
 			thing_top = find_child("Top", true, true)
 
 			if thing_top == null:
-				print("No thing_top found for ", name, ". Setting to transform.")
+				# print("No thing_top found for ", name, ". Setting to transform.")
 				thing_top = self
-			else:
-				print("thing_top found for ", name, ": ", thing_top)
+			# else:
+				# print("thing_top found for ", name, ": ", thing_top)
 		return thing_top
 	set(value):
 		thing_top = value
+
+@export var thing_bottom: Node3D = null:
+	get:
+		if thing_bottom == null:
+			thing_bottom = find_child("Bottom", true, true)
+
+			if thing_bottom == null:
+				# print("No thing_bottom found for ", name, ". Setting to transform.")
+				thing_bottom = self
+			# else:
+				# print("thing_bottom found for ", name, ": ", thing_bottom)
+		return thing_bottom
+	set(value):
+		thing_bottom = value
 
 var health: int = 0:
 	set(value):

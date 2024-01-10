@@ -9,4 +9,3 @@ func _init():
 
 func primary(pressed):
 	character.jump_input = pressed
-	
