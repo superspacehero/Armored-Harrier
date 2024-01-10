@@ -3,9 +3,9 @@
 [ext_resource type="PackedScene" uid="uid://cieup7pci776r" path="res://Main/Prefabs/Things/Parts/Body/Pelvis/Pelvis.res" id="1_u0pxu"]
 [ext_resource type="Script" path="res://Main/Scripts/Things/CharacterInfo.gd" id="1_yaj72"]
 [ext_resource type="PackedScene" uid="uid://dn23qu3m2dau3" path="res://Main/Prefabs/Things/Parts/Body/Torso/Torso.res" id="2_inru0"]
-[ext_resource type="PackedScene" uid="uid://1bgvsowq5d62" path="res://Main/Prefabs/Things/Parts/Body/Leg/Leg_Test.res" id="3_46d4q"]
+[ext_resource type="PackedScene" uid="uid://lg76kkhhmkpw" path="res://Main/Prefabs/Things/Parts/Body/Leg/Leg.res" id="3_35gbr"]
 [ext_resource type="PackedScene" uid="uid://bfi8c4qkl36wo" path="res://Main/Prefabs/Things/Parts/Body/Arm/Arm.res" id="4_qyxb0"]
-[ext_resource type="PackedScene" uid="uid://bdqygacbiq4s1" path="res://Main/Prefabs/Things/Parts/Body/Head/Head_Test.res" id="5_ihy6l"]
+[ext_resource type="PackedScene" uid="uid://bdqygacbiq4s1" path="res://Main/Prefabs/Things/Parts/Body/Head/Head_Test.res" id="5_0w6v6"]
 [ext_resource type="PackedScene" uid="uid://ctw4dmvq17srl" path="res://Main/Prefabs/Things/Parts/Weapon/Handheld/Handgun.res" id="6_buxsj"]
 [ext_resource type="PackedScene" uid="uid://dd020m2amkbf0" path="res://Main/Prefabs/Things/Parts/Utility/Thruster/Thruster.tscn" id="7_ylcsv"]
 [ext_resource type="PackedScene" uid="uid://rvt3ofdp4rla" path="res://Main/Prefabs/Things/Parts/Utility/Targeter/Targeter.tscn" id="8_cqr3x"]
@@ -15,7 +15,7 @@ script = ExtResource("1_yaj72")
 name = "Default Character"
 description = "The default character."
 value = 0
-character_parts = Array[PackedScene]([ExtResource("1_u0pxu"), ExtResource("2_inru0"), ExtResource("3_46d4q"), ExtResource("3_46d4q"), ExtResource("4_qyxb0"), ExtResource("4_qyxb0"), ExtResource("5_ihy6l"), ExtResource("6_buxsj"), ExtResource("6_buxsj"), ExtResource("7_ylcsv"), ExtResource("8_cqr3x")])
+character_parts = Array[PackedScene]([ExtResource("1_u0pxu"), ExtResource("2_inru0"), ExtResource("3_35gbr"), ExtResource("3_35gbr"), ExtResource("4_qyxb0"), ExtResource("4_qyxb0"), ExtResource("5_0w6v6"), ExtResource("6_buxsj"), ExtResource("6_buxsj"), ExtResource("7_ylcsv"), ExtResource("8_cqr3x")])
 variables = {
 "energy": 100,
 "health": 100

@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bwxb8n88dupq1"
+path="res://.godot/imported/leg_test.obj-50bb82dc43545f26f76a83631ac61f6c.mesh"
+
+[deps]
+
+files=["res://.godot/imported/leg_test.obj-50bb82dc43545f26f76a83631ac61f6c.mesh"]
+
+source_file="res://Main/Art/Models/Mechs/Parts/Body/Leg/leg_test.obj"
+dest_files=["res://.godot/imported/leg_test.obj-50bb82dc43545f26f76a83631ac61f6c.mesh", "res://.godot/imported/leg_test.obj-50bb82dc43545f26f76a83631ac61f6c.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
