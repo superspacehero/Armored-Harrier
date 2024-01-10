@@ -348,7 +348,7 @@ func rotate_torsos(delta):
 			# Adjust the angle to prevent the torso from flipping upside down
 			# target_angle = min(PI/2, max(-PI/2, target_angle))
 
-		elif aiming > 0:
+		elif target_movement.length() > 0.01 or aiming > 0:
 			target_angle = -aimer.rotation.x
 			target_angle = clamp(target_angle, -PI/2, PI/2)
 

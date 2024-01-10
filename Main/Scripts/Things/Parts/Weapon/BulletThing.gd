@@ -44,18 +44,20 @@ func _process(delta):
 		self.add_child(muzzle_flash)
 
 func _physics_process(delta):
-	var collision : KinematicCollision3D = bullet.move_and_collide(self.global_basis.z * bullet_speed * delta)
-	if collision and bullet.process_mode != Node.PROCESS_MODE_DISABLED:
-		set_bullet_active(false)
-		bullet_impact.position = bullet.position
-		bullet_impact.emitting = true
+	if bullet.process_mode != Node.PROCESS_MODE_DISABLED:
+		var collision : KinematicCollision3D = bullet.move_and_collide(self.global_basis.z * bullet_speed * delta)
 
-		# Damage the thing we hit
-		var collider_thing = collision.get_collider()
-		
-		while collider_thing:
-			if collider_thing is GameThing:
-				var game_thing : GameThing = collider_thing as GameThing
-				game_thing.damage(damage_amount)
-				break
-			collider_thing = collider_thing.get_parent()
+		if collision:
+			set_bullet_active(false)
+			bullet_impact.position = bullet.position
+			bullet_impact.emitting = true
+
+			# Damage the thing we hit
+			var collider_thing = collision.get_collider()
+			
+			while collider_thing:
+				if collider_thing is GameThing:
+					var game_thing : GameThing = collider_thing as GameThing
+					game_thing.damage(damage_amount)
+					break
+				collider_thing = collider_thing.get_parent()
