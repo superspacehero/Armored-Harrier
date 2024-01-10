@@ -505,6 +505,8 @@ func assemble_character(path: String = ""):
 
 	# Set the height of the character's collision shape to match the height between the thing top and thing bottom.
 	var height = thing_top.global_position.y - thing_bottom.global_position.y
+	print("height: " + str(height))
+	character_collision.position.y = thing_top.global_position.y - height / 2
 	(character_collision.shape as CapsuleShape3D).height = height
 
 func clear_previous_parts() -> void:
