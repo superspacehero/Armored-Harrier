@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://d3dnji42fvg0d"]
+[gd_scene load_steps=17 format=3 uid="uid://d3dnji42fvg0d"]
 
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="2_8hthw"]
 [ext_resource type="PackedScene" uid="uid://4ssg4xnbbkyu" path="res://Main/Prefabs/Game Manager.res" id="2_84v2m"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://dhb6q8ny1oqii" path="res://Main/Prefabs/Environment/City/Signage/Sign_Traffic.tscn" id="10_iw2yv"]
 [ext_resource type="PackedScene" uid="uid://b8pl1jkovvqsh" path="res://Main/Prefabs/Environment/City/Signage/Sign_Yield.tscn" id="11_wxqkj"]
 [ext_resource type="PackedScene" uid="uid://cccy0fh22j13e" path="res://Main/Prefabs/Things/Oil Barrel.tscn" id="14_4txco"]
+[ext_resource type="PackedScene" uid="uid://c72qhcr623ouo" path="res://Main/Prefabs/Things/Character.res" id="15_08vvr"]
 
 [sub_resource type="Resource" id="Resource_ty1th"]
 script = ExtResource("4_n0sni")
@@ -87,4 +88,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.04875, -2, -3)
 [node name="Oil Barrel3" parent="." instance=ExtResource("14_4txco")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.549091, -2, -3)
 
+[node name="Character" parent="." instance=ExtResource("15_08vvr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.502, 0, 1.13)
+
 [editable path="Game Manager"]
+[editable path="Character"]
