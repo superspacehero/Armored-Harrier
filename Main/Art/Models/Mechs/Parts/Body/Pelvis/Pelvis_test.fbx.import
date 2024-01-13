@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://dcfa8y073uvry"
-path="res://.godot/imported/pelvis_test.fbx-29c0e50ef88fbc91455ed708c61263ff.scn"
+path="res://.godot/imported/Pelvis_test.fbx-ba560e81d199066de1fcff8f20356667.scn"
 
 [deps]
 
-source_file="res://Main/Art/Models/Mechs/Parts/Body/Pelvis/pelvis_test.fbx"
-dest_files=["res://.godot/imported/pelvis_test.fbx-29c0e50ef88fbc91455ed708c61263ff.scn"]
+source_file="res://Main/Art/Models/Mechs/Parts/Body/Pelvis/Pelvis_test.fbx"
+dest_files=["res://.godot/imported/Pelvis_test.fbx-ba560e81d199066de1fcff8f20356667.scn"]
 
 [params]
 

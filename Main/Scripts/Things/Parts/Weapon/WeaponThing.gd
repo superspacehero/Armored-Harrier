@@ -7,6 +7,9 @@ func _init():
 var _attacking : bool = false
 var _secondary_attacking : bool = false
 
+func _get_damage_amount() -> int:
+	return 0
+
 func attack(attacking : bool):
 	_attacking = attacking
 	

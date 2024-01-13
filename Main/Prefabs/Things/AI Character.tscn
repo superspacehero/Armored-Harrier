@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bx54e3161kw4x"]
+
+[ext_resource type="PackedScene" uid="uid://c72qhcr623ouo" path="res://Main/Prefabs/Things/Base Character.res" id="1_p6in7"]
+[ext_resource type="Script" path="res://Main/Scripts/Things/AIInput.gd" id="2_vc45o"]
+
+[node name="Character" instance=ExtResource("1_p6in7")]
+
+[node name="Input" parent="CharacterBody3D" index="2" node_paths=PackedStringArray("character")]
+script = ExtResource("2_vc45o")
+character = NodePath("../..")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." index="1"]

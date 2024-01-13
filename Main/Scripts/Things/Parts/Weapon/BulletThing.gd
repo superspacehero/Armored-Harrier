@@ -7,7 +7,7 @@ func _init():
 @export var life = 1.0
 var life_timer = 0.0
 
-@export var damage_amount = 1
+var damage_amount = 1
 
 @export_category("Effects")
 @export var muzzle_flash : GPUParticles3D

@@ -90,6 +90,7 @@ process_material = SubResource("ParticleProcessMaterial_urg70")
 draw_pass_1 = SubResource("QuadMesh_2hkar")
 
 [node name="Bullet" type="RigidBody3D" parent="."]
+collision_mask = 3
 input_ray_pickable = false
 axis_lock_angular_x = true
 axis_lock_angular_y = true

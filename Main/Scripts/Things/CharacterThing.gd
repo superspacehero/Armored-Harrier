@@ -31,6 +31,9 @@ enum movement_rotation_behavior { NONE, FULL_ROTATION, LEFT_RIGHT_ROTATION, TOWA
 @export var energy_bar : ProgressBar
 @export var energy_recovery_rate : float = 20.0
 
+@export_category("Targeting")
+@export_range(0.0, 1.0) var target_hostility_threshold : float = 0.0
+
 var targets: Array = []
 var target: TargetableThing = null
 
@@ -83,8 +86,11 @@ func set_targets_selected():
 	for _target in targets:
 		(_target as Target).selected = _target.target == target
 
+func is_ally(target_object: TargetableThing) -> bool:
+	return target_object.thing_team == thing_team
+
 func add_target(target_object: TargetableThing):
-	if find_target(target_object):
+	if find_target(target_object) or is_ally(target_object) or target_object.thing_hostility < target_hostility_threshold:
 		return
 
 	if aimer is GameplayCamera:
@@ -342,7 +348,7 @@ func rotate_torsos(delta):
 		var target_angle = 0.0
 		if target and is_instance_valid(target):
 			# Calculate the direction to the target in the torso's local space
-			var local_target_pos = -character_base.to_local(target.global_position + (character_base.global_position - torso.global_position))
+			var local_target_pos = -character_base.to_local((target.thing_bottom.global_position.lerp(target.thing_top.global_position, 0.5)) + (character_base.global_position - torso.global_position))
 			target_angle = atan2(local_target_pos.y, local_target_pos.z)
 
 			# Adjust the angle to prevent the torso from flipping upside down
@@ -424,6 +430,16 @@ func right_trigger(pressed):
 		if part is CharacterPartThing:
 			part.right_trigger(pressed)
 
+func left_bumper(pressed):
+	for part in parts:
+		if part is CharacterPartThing:
+			part.left_bumper(pressed)
+
+func right_bumper(pressed):
+	for part in parts:
+		if part is CharacterPartThing:
+			part.right_bumper(pressed)
+
 func previous_target(pressed):
 	if pressed:
 		cycle_target(-1)
@@ -486,6 +502,9 @@ func assemble_character(path: String = ""):
 
 		if part is TorsoThing:
 			torsos.append(part)
+
+		if part is TargeterThing:
+			part.visible = (aimer is GameplayCamera)
 
 	if _legs > 0:
 		_move_speed /= _legs
@@ -557,3 +576,10 @@ func attach_part_to_slot(slot: ThingSlot):
 			break
 	if !attached_part_success:
 		print("No part to attach to slot: " + slot.name)
+
+func get_parts_by_type(type: String) -> Array:
+	var parts_by_type: Array = []
+	for part in parts:
+		if part is CharacterPartThing and (part.thing_type == type or part.thing_subtype == type):
+			parts_by_type.append(part)
+	return parts_by_type

@@ -16,6 +16,10 @@ func _ready():
 @export_category("Variables")
 @export var thing_name : String
 @export var thing_description : String = ""
+
+@export var thing_team : int = 0
+@export_range(0.0, 1.0) var thing_hostility : float = 0.0
+
 @export var thing_value : int = 0
 @export var thing_weight : int = 5
 @export var variables: Dictionary
@@ -104,6 +108,12 @@ func left_trigger(_pressed):
 	pass
 
 func right_trigger(_pressed):
+	pass
+
+func left_bumper(_pressed):
+	pass
+
+func right_bumper(_pressed):
 	pass
 
 func previous_target(_pressed):

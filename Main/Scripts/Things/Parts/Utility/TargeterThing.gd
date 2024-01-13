@@ -4,8 +4,6 @@ class_name TargeterThing
 func _init():
 	thing_subtype = "Targeter"
 
-@export var target_mesh: RigidBody3D
-
 func _on_target_body_entered(body):
 	if body == character.character_body:
 		return

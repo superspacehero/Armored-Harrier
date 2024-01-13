@@ -6,14 +6,6 @@ var device_id: int = 0
 
 @export var is_player = true
 
-# AI Variables
-var action_coroutine = null
-var targets = [] # This should be an array of GameThing nodes
-var current_target_index = 0
-var can_control = false
-enum AIState { CHOOSING_ACTION, IDLING, MOVING, ATTACKING, HEALING, FLEEING, ENDING_TURN }
-var action_delay = 1.0
-
 var move_action: Vector2 = Vector2.ZERO:
 	set(value):
 		if value != move_action:
@@ -51,6 +43,20 @@ var right_trigger_action: bool = false:
 			for game_thing in inventory:
 				game_thing.right_trigger(value)
 			right_trigger_action = value
+
+var left_bumper_action: bool = false:
+	set(value):
+		if value != left_bumper_action:
+			for game_thing in inventory:
+				game_thing.left_bumper(value)
+			left_bumper_action = value
+
+var right_bumper_action: bool = false:
+	set(value):
+		if value != right_bumper_action:
+			for game_thing in inventory:
+				game_thing.right_bumper(value)
+			right_bumper_action = value
 
 var primary_action: bool = false:
 	set(value):
