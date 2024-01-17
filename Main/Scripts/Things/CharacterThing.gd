@@ -38,6 +38,12 @@ var targets: Array = []
 var target: TargetableThing = null
 
 func sort_targets():
+	for _target in targets:
+		if _target is Target:
+			continue
+		else:
+			return  # Don't sort if there are any non-Target objects in the array
+
 	targets.sort_custom(_sort_targets_left_to_right)
 
 func _sort_targets_left_to_right(a: Target, b: Target) -> int:
@@ -63,9 +69,11 @@ func cycle_target(direction: int):
 		else:
 			target = null
 
-func find_target(target_object: TargetableThing) -> Target:
+func find_target(target_object: TargetableThing) -> Node:
 	for _target in targets:
-		if _target.target == target_object:
+		if _target is Target and _target.target == target_object:
+			return _target
+		elif _target == target_object:
 			return _target
 	return null
 
@@ -84,24 +92,39 @@ func set_target(new_target: TargetableThing):
 
 func set_targets_selected():
 	for _target in targets:
-		(_target as Target).selected = _target.target == target
+		if _target is Target:
+			(_target as Target).selected = _target.target == target
 
 func is_ally(target_object: TargetableThing) -> bool:
+	if target_object == null:
+		return false
 	return target_object.thing_team == thing_team
 
-func add_target(target_object: TargetableThing):
-	if find_target(target_object) or is_ally(target_object) or target_object.thing_hostility < target_hostility_threshold:
-		return
+func damage(amount : int, attacker : GameThing = null):
+	health -= amount
+	add_target(attacker, true)
 
+func add_target(target_object: TargetableThing, override_target_requirements: bool = false):
+	if target_object == null or find_target(target_object) != null:
+		return  # Exit if target is null or already in the list
+
+	var should_add_target = override_target_requirements or not is_ally(target_object) and target_object.thing_hostility >= target_hostility_threshold
+	if not should_add_target:
+		return  # Exit if we should not add this target
+
+	var new_target
 	if aimer is GameplayCamera:
-		var _target: FollowWorldPosition = GameManager.instance.target_pool.get_object_from_pool(position)
-		_target.camera = (aimer as GameplayCamera)
-		targets.append(_target)
-		_target.get_parent().remove_child(_target)
-		aimer.add_child(_target)
-		_target.target = target_object
+		new_target = GameManager.instance.target_pool.get_object_from_pool(position)
+		new_target.camera = aimer as GameplayCamera
+		new_target.target = target_object
+		new_target.get_parent().remove_child(new_target)
+		aimer.add_child(new_target)
+	else:
+		new_target = target_object
 
-	if not target:
+	targets.append(new_target)
+
+	if target == null:
 		set_target(target_object)
 
 	set_targets_selected()
@@ -119,6 +142,8 @@ func remove_target(target_object: TargetableThing):
 		targets.erase(_target)
 		GameManager.instance.target_pool.return_object_to_pool(_target)
 		removed_target_index = index
+	else:
+		removed_target_index = targets.find(target_object)
 
 	if target == target_object:
 		target = null  # Clear the current target as it's being removed
@@ -247,6 +272,9 @@ func _physics_process(delta):
 	character_body.move_and_slide()
 	character_body.velocity = velocity
 
+	rotate_torsos(delta)
+	rotate_towards_goto_rotation(delta)
+
 func is_in_air() -> bool:
 	return !character_body.is_on_floor() and is_jumping
 
@@ -260,9 +288,6 @@ func _process(delta):
 			energy += energy_recovery_rate * delta
 	elif energy < max_energy:
 		energy += energy_recovery_rate * delta
-
-	rotate_torsos(delta)
-	rotate_towards_goto_rotation(delta)
 
 func validate_targets():
 	# Check if the current target is still valid
@@ -309,7 +334,7 @@ func calculate_movement_direction(input_direction: Vector2) -> Vector3:
 	if direction.length() > 1:
 		direction = direction.normalized()
 
-	if direction.length() > 0.01:
+	if not target and (direction.length() > 0.01 or aiming > 0):
 		rotate_base(direction)
 
 	return direction
@@ -339,24 +364,26 @@ func rotate_base(direction: Vector3):
 	goto_rotation = atan2(rotation_direction.x, rotation_direction.z)
 	# print("goto_rotation: " + str(rad_to_deg(goto_rotation)))
 
-var aiming : int:
+var aiming : int = 1:
 	set(new_value):
-		aiming = max(new_value, 0)  # Ensure aiming does not go below 0
+		aiming = max(new_value, aiming)  # Ensure aiming does not go below the minimum
+var aiming_minimum : int = 1
 
 func rotate_torsos(delta):
 	for torso in torsos:
+		if not torso:
+			continue
+
 		var target_angle = 0.0
 		if target and is_instance_valid(target):
 			# Calculate the direction to the target in the torso's local space
-			var local_target_pos = -character_base.to_local((target.thing_bottom.global_position.lerp(target.thing_top.global_position, 0.5)) + (character_base.global_position - torso.global_position))
+			var local_target_pos = -character_base.to_local((target.thing_position(0.5)) + (character_base.global_position - torso.global_position))
 			target_angle = atan2(local_target_pos.y, local_target_pos.z)
-
-			# Adjust the angle to prevent the torso from flipping upside down
-			# target_angle = min(PI/2, max(-PI/2, target_angle))
-
-		elif target_movement.length() > 0.01 or aiming > 0:
-			target_angle = -aimer.rotation.x
-			target_angle = clamp(target_angle, -PI/2, PI/2)
+		elif aiming > 0:
+			if aimer is GameplayCamera:
+				target_angle = -aimer.rotation.x
+				
+		target_angle = clamp(target_angle, -PI/2, PI/2)
 
 		# Apply the rotation
 		if rotation_time > 0:
@@ -381,10 +408,10 @@ func rotate_towards_target():
 	var angle_diff_deg = rad_to_deg(angle_diff_rad)
 
 	if angle_diff_deg <= aiming_angle_threshold:
-		var target_direction = (character_base.global_position - target.global_position).normalized()
+		var target_direction = (character_base.global_position - (target.global_position if not target is CharacterThing else target.character_base.global_position)).normalized()
 		goto_rotation = atan2(target_direction.x, target_direction.z)
 	else:
-		target = null
+		remove_target(target)
 
 # 4. Event Handling Functions
 
@@ -402,7 +429,7 @@ func aim(direction):
 	
 func primary(pressed):
 	for part in parts:
-		if part is CharacterPartThing:
+		if is_instance_valid(part) and part is CharacterPartThing:
 			part.primary(pressed)
 
 func secondary(pressed):
@@ -478,6 +505,11 @@ func assemble_character(path: String = ""):
 			var part_instance = part.instantiate()
 			if part_instance is HeadThing:
 				thing_top = part_instance.thing_top
+				# if not aimer is GameplayCamera:
+				# 	# Reparent the aimer to the head.
+				# 	aimer.get_parent().remove_child(aimer)
+				# 	part_instance.add_child(aimer)
+				# 	aimer.position = Vector3.ZERO
 			parts.append(part_instance)
 			# Set any properties on the part, such as color.
 			part_instance.character = self

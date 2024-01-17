@@ -19,6 +19,7 @@ collision_layer = 2
 mass = 189.0
 script = ExtResource("1_53e84")
 thing_top = NodePath("Top")
+max_health = 1
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.219, 0)

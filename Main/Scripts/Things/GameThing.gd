@@ -61,7 +61,7 @@ var inventory : Array = []
 
 var health: int = 0:
 	set(value):
-		if value < 0:
+		if value <= 0:
 			value = 0
 			die()
 		if value > max_health:
@@ -70,15 +70,23 @@ var health: int = 0:
 	get:
 		return health
 
+var attacking : int = 0
+
+func thing_is_attacking():
+	return attacking > 0
+
 @export var max_health: int = 10
 
-func damage(amount):
+func damage(amount : int, _attacker : GameThing = null):
 	health -= amount
 
 # Functions
 func _init():
 	thing_type = "Game"
 	thing_subtype = "Game"
+
+func thing_position(height : float = 0.0):
+	return thing_bottom.global_position.lerp(thing_top.global_position, height)
 
 func die():
 	# Destroy self

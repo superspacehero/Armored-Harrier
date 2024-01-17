@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://d3dnji42fvg0d"]
+[gd_scene load_steps=18 format=3 uid="uid://d3dnji42fvg0d"]
 
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="2_8hthw"]
 [ext_resource type="PackedScene" uid="uid://4ssg4xnbbkyu" path="res://Main/Prefabs/Game Manager.res" id="2_84v2m"]
@@ -16,6 +16,8 @@
 [ext_resource type="PackedScene" uid="uid://cccy0fh22j13e" path="res://Main/Prefabs/Things/Oil Barrel.tscn" id="14_4txco"]
 [ext_resource type="PackedScene" uid="uid://bx54e3161kw4x" path="res://Main/Prefabs/Things/AI Character.tscn" id="15_ub3ov"]
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_s4r3f"]
+
 [sub_resource type="Resource" id="Resource_ty1th"]
 script = ExtResource("4_n0sni")
 mode = 0
@@ -29,7 +31,10 @@ shadow_enabled = true
 
 [node name="Game Manager" parent="." instance=ExtResource("2_84v2m")]
 
-[node name="HTerrain" type="Node3D" parent="."]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_s4r3f")
+
+[node name="HTerrain" type="Node3D" parent="NavigationRegion3D"]
 script = ExtResource("2_8hthw")
 ambient_wind = 0.025
 centered = true
@@ -53,7 +58,7 @@ shader_params/u_globalmap_blend_distance = null
 shader_params/u_colormap_opacity_per_texture = Vector4(1, 1, 1, 1)
 shader_params/u_specular = 0.0
 
-[node name="HTerrainDetailLayer" type="Node3D" parent="HTerrain"]
+[node name="HTerrainDetailLayer" type="Node3D" parent="NavigationRegion3D/HTerrain"]
 script = ExtResource("7_5wocu")
 texture = ExtResource("8_ows7i")
 density = 0.125
@@ -89,7 +94,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.04875, -2, -3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.549091, -2, -3)
 
 [node name="Character" parent="." instance=ExtResource("15_ub3ov")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.94, 0, -0.83)
-thing_team = 0
+
+[node name="Character2" parent="." instance=ExtResource("15_ub3ov")]
+
+[node name="Character3" parent="." instance=ExtResource("15_ub3ov")]
+
+[node name="Character4" parent="." instance=ExtResource("15_ub3ov")]
 
 [editable path="Game Manager"]

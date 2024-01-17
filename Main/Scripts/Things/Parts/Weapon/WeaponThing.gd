@@ -7,18 +7,22 @@ func _init():
 var _attacking : bool = false
 var _secondary_attacking : bool = false
 
+var ready_to_use : bool = true
+
 func _get_damage_amount() -> int:
 	return 0
 
-func attack(attacking : bool):
-	_attacking = attacking
+func attack(is_attacking : bool):
+	_attacking = is_attacking
 	
-	character.aiming += 1 if attacking else -1
+	character.attacking += 1 if is_attacking else -1
+	character.aiming += 1 if is_attacking else -1
 
-func secondary_attack(attacking : bool):
-	_secondary_attacking = attacking
+func secondary_attack(is_attacking : bool):
+	_secondary_attacking = is_attacking
 
-	character.aiming += 1 if attacking else -1
+	character.attacking += 1 if is_attacking else -1
+	character.aiming += 1 if is_attacking else -1
 
 func _process(_delta):
 	if _attacking or _secondary_attacking:

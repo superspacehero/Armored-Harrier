@@ -4,9 +4,9 @@
 [ext_resource type="Script" path="res://Main/Scripts/Things/AIInput.gd" id="2_vc45o"]
 
 [node name="Character" instance=ExtResource("1_p6in7")]
+thing_team = 2
+max_health = 100
 
 [node name="Input" parent="CharacterBody3D" index="2" node_paths=PackedStringArray("character")]
 script = ExtResource("2_vc45o")
 character = NodePath("../..")
-
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." index="1"]

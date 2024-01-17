@@ -48,7 +48,7 @@ func set_camera_object(game_thing: GameThing, camera_height: float = 0.5, immedi
 	#	game_thing.add_child(self)
 	# self.owner = game_thing
 	start_position = self.global_position
-	target_position = lerp(game_thing.global_position, game_thing.thing_top.global_position, camera_height)
+	target_position = game_thing.thing_position(camera_height)
 
 	if immediate:
 		self.global_position = target_position
