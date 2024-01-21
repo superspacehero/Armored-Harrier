@@ -4,6 +4,8 @@ class_name WeaponThing
 func _init():
 	thing_type = "Weapon"
 
+@export var weapon_range : float = 1.0
+
 var _attacking : bool = false
 var _secondary_attacking : bool = false
 

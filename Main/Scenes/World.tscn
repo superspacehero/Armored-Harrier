@@ -26,8 +26,11 @@ textures = [[ExtResource("5_xbndm"), ExtResource("6_fl03l")], [null, null]]
 [node name="Node3D" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0.457835, -0.485786, 0.74458, -0.200966, 0.759284, 0.618952, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+light_energy = 0.5
 shadow_enabled = true
+shadow_blur = 0.05
+directional_shadow_mode = 0
 
 [node name="Game Manager" parent="." instance=ExtResource("2_84v2m")]
 
@@ -100,5 +103,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.549091, -2, -3)
 [node name="Character3" parent="." instance=ExtResource("15_ub3ov")]
 
 [node name="Character4" parent="." instance=ExtResource("15_ub3ov")]
-
-[editable path="Game Manager"]

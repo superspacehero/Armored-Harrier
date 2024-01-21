@@ -4,6 +4,8 @@ class_name BulletThing
 func _init():
 	thing_type = "Bullet"
 
+var shooter : GameThing
+
 @export var life = 1.0
 var life_timer = 0.0
 
@@ -40,7 +42,10 @@ func _process(delta):
 
 		set_bullet_active(false)
 
-		muzzle_flash.get_parent().remove_child(muzzle_flash)
+		if is_instance_valid(muzzle_flash) && muzzle_flash.get_parent():
+			muzzle_flash.get_parent().remove_child(muzzle_flash)
+		else:
+			GameManager.instance.bullet_pool.remove_object_from_pool(self)
 		self.add_child(muzzle_flash)
 
 func _physics_process(delta):
@@ -56,8 +61,8 @@ func _physics_process(delta):
 			var collider_thing = collision.get_collider()
 			
 			while collider_thing:
-				if collider_thing is GameThing:
+				if is_instance_valid(collider_thing) and collider_thing is GameThing:
 					var game_thing : GameThing = collider_thing as GameThing
-					game_thing.damage(damage_amount)
+					game_thing.damage(damage_amount, shooter)
 					break
 				collider_thing = collider_thing.get_parent()

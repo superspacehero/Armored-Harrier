@@ -5,7 +5,6 @@
 
 [node name="Character" instance=ExtResource("1_p6in7")]
 thing_team = 2
-max_health = 100
 
 [node name="Input" parent="CharacterBody3D" index="2" node_paths=PackedStringArray("character")]
 script = ExtResource("2_vc45o")

@@ -17,6 +17,8 @@ func _on_target_body_entered(body):
 		else:
 			target = target.get_parent()
 
+	# print("Targeter: Target entered")
+
 func _on_target_body_exited(body:Node3D):
 	if body == character.character_body:
 		return
@@ -26,6 +28,7 @@ func _on_target_body_exited(body:Node3D):
 	while target != null:
 		if target is TargetableThing:
 			character.remove_target(target as TargetableThing)
+				# print("Targeter: Target exited")
 			break
 		else:
 			target = target.get_parent()

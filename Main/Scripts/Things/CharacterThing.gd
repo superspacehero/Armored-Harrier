@@ -37,17 +37,41 @@ enum movement_rotation_behavior { NONE, FULL_ROTATION, LEFT_RIGHT_ROTATION, TOWA
 var targets: Array = []
 var target: TargetableThing = null
 
+class TargetWrapper:
+	var target_node: Node
+	var permanent: bool
+	var target: Target
+
+	func _init(_target_node: Node, _permanent: bool = false, aimer: Node3D = null):
+		target_node = _target_node
+		permanent = _permanent
+
+		if aimer is GameplayCamera:
+			target = GameManager.instance.target_pool.get_object_from_pool(aimer.global_position)
+			target.camera = aimer as GameplayCamera
+			target.target = target_node
+			if target.get_parent():
+				target.get_parent().remove_child(target)
+			aimer.add_child(target)
+
+	func remove():
+		if target:
+			if target.get_parent():
+				target.get_parent().remove_child(target)
+			GameManager.instance.target_pool.return_object_to_pool(target)
+			target = null
+
 func sort_targets():
 	for _target in targets:
-		if _target is Target:
+		if _target.target:
 			continue
 		else:
 			return  # Don't sort if there are any non-Target objects in the array
 
 	targets.sort_custom(_sort_targets_left_to_right)
 
-func _sort_targets_left_to_right(a: Target, b: Target) -> int:
-	return int(a.position.x < b.position.x)
+func _sort_targets_left_to_right(a: TargetWrapper, b: TargetWrapper) -> int:
+	return int(a.target.position.x < b.target.position.x)
 
 func cycle_target(direction: int):
 	if targets.size() == 0:
@@ -56,33 +80,36 @@ func cycle_target(direction: int):
 	# Ensure targets are sorted before cycling
 	sort_targets()
 
-	# Check if the current target is still valid
-	if is_instance_valid(target):
-		var index = find_target_index(target)
-		# Calculate new index, making sure it's within the array bounds
-		index = (index + direction + targets.size()) % targets.size()
-		set_target(targets[index].target)
-	else:
-		# If current target is not valid, select a new target if available
-		if targets.size() > 0:
-			set_target(targets[0].target)
-		else:
-			target = null
+	var current_index = find_target_index(target)
+	var new_index = current_index
 
-func find_target(target_object: TargetableThing) -> Node:
-	for _target in targets:
-		if _target is Target and _target.target == target_object:
-			return _target
-		elif _target == target_object:
-			return _target
+	# Loop to find the next valid target
+	var iterations = 0
+	while iterations < targets.size():
+		new_index = (new_index + direction + targets.size()) % targets.size()
+		var potential_target_wrapper = targets[new_index]
+		
+		if is_instance_valid(potential_target_wrapper.target_node) or potential_target_wrapper.permanent:
+			break
+
+		iterations += 1
+
+	if iterations < targets.size():
+		set_target(targets[new_index].target_node)
+	else:
+		# No valid targets found
+		target = null
+
+func find_target(target_object: TargetableThing) -> TargetWrapper:
+	for wrapper in targets:
+		if wrapper.target_node == target_object:
+			return wrapper
 	return null
 
 func find_target_index(target_object: TargetableThing) -> int:
-	if not is_instance_valid(target_object):
-		return -1
-
 	for i in range(targets.size()):
-		if targets[i].target == target_object:
+		var wrapper = targets[i]
+		if wrapper.target_node == target_object:
 			return i
 	return -1
 
@@ -92,8 +119,8 @@ func set_target(new_target: TargetableThing):
 
 func set_targets_selected():
 	for _target in targets:
-		if _target is Target:
-			(_target as Target).selected = _target.target == target
+		if _target.target:
+			_target.target.selected = _target.target_node == target
 
 func is_ally(target_object: TargetableThing) -> bool:
 	if target_object == null:
@@ -102,70 +129,56 @@ func is_ally(target_object: TargetableThing) -> bool:
 
 func damage(amount : int, attacker : GameThing = null):
 	health -= amount
-	add_target(attacker, true)
 
-func add_target(target_object: TargetableThing, override_target_requirements: bool = false):
-	if target_object == null or find_target(target_object) != null:
+	if not aimer is GameplayCamera and is_instance_valid(attacker) and attacker.thing_team != thing_team:
+		add_target(attacker, true, true)
+
+var dying : bool = false
+
+func die():
+	if dying:
+		return
+
+	if aimer is GameplayCamera and is_instance_valid(aimer.get_parent()):
+		# Parent the aimer to the root node to prevent it from being deleted
+		var previous_position = aimer.global_position
+		aimer.get_parent().remove_child(aimer)
+		get_tree().root.add_child(aimer)
+		aimer.global_position = previous_position
+		(aimer as GameplayCamera).camera_rotation_amount = Vector2.ZERO
+
+	# Delay the actual death until the next frame to allow the camera to be parented to the root node
+	dying = true
+	call_deferred("queue_free")
+
+func add_target(target_object: TargetableThing, override_target_requirements: bool = false, permanent: bool = false):
+	if not is_instance_valid(target_object) or find_target(target_object) != null:
 		return  # Exit if target is null or already in the list
 
 	var should_add_target = override_target_requirements or not is_ally(target_object) and target_object.thing_hostility >= target_hostility_threshold
 	if not should_add_target:
 		return  # Exit if we should not add this target
 
-	var new_target
-	if aimer is GameplayCamera:
-		new_target = GameManager.instance.target_pool.get_object_from_pool(position)
-		new_target.camera = aimer as GameplayCamera
-		new_target.target = target_object
-		new_target.get_parent().remove_child(new_target)
-		aimer.add_child(new_target)
-	else:
-		new_target = target_object
-
-	targets.append(new_target)
+	var new_target_wrapper = TargetWrapper.new(target_object, permanent, aimer)
+	targets.append(new_target_wrapper)
 
 	if target == null:
-		set_target(target_object)
+		set_target(new_target_wrapper.target_node)
 
 	set_targets_selected()
 	sort_targets()
 
-func remove_target(target_object: TargetableThing):
-	if not is_instance_valid(target_object) or not find_target(target_object):
-		return
+func remove_target(target_object: TargetableThing) -> bool:
+	var target_wrapper = find_target(target_object)
+	if target_wrapper and not target_wrapper.permanent:
+		targets.erase(target_wrapper)
+		target_wrapper.remove()
 
-	var removed_target_index = -1
-
-	if aimer is GameplayCamera:
-		var index = find_target_index(target_object)
-		var _target = targets[index]
-		targets.erase(_target)
-		GameManager.instance.target_pool.return_object_to_pool(_target)
-		removed_target_index = index
-	else:
-		removed_target_index = targets.find(target_object)
-
-	if target == target_object:
-		target = null  # Clear the current target as it's being removed
-
-	targets.erase(find_target(target_object))
-	set_targets_selected()
-	sort_targets()
-
-	# Set to next nearest target if the current target was removed
-	if removed_target_index != -1:
-		set_to_nearest_target(removed_target_index)
-
-func set_to_nearest_target(removed_index: int):
-	if targets.size() == 0:
-		return  # No targets to set
-
-	if removed_index >= targets.size():
-		# If the removed target was the last in the list
-		set_target(targets[targets.size() - 1].target)
-	else:
-		# Otherwise, set to the target at the current index
-		set_target(targets[removed_index].target)
+		if is_instance_valid(target_object) and target == target_object:
+			switch_to_next_target(find_target_index(target_object))
+			target = null
+		return true
+	return false
 
 var torsos : Array = []
 
@@ -228,6 +241,16 @@ func _ready():
 	rotate_base(Vector3.FORWARD if rotation_behavior != movement_rotation_behavior.LEFT_RIGHT_ROTATION else Vector3.RIGHT)
 
 func _physics_process(delta):
+	validate_targets()  # Validate targets each frame
+
+	if can_use_energy:
+		if energy_consumption_rate > 0:
+			energy -= energy_consumption_rate * delta
+		else:
+			energy += energy_recovery_rate * delta
+	elif energy < max_energy:
+		energy += energy_recovery_rate * delta
+
 	# Lerp the current movement towards the target movement
 	if is_in_air():
 		current_movement = current_movement.lerp(target_movement if override_target_movement.length() == 0 else override_target_movement, air_control_smoothness)
@@ -269,8 +292,9 @@ func _physics_process(delta):
 		if is_in_air() and velocity.y < 0:
 			velocity.y = lerp(velocity.y, 0.0, anti_gravity_smoothness)
 
-	character_body.move_and_slide()
-	character_body.velocity = velocity
+	if is_instance_valid(character_body) and character_body.is_inside_tree():
+		character_body.move_and_slide()
+		character_body.velocity = velocity
 
 	rotate_torsos(delta)
 	rotate_towards_goto_rotation(delta)
@@ -278,38 +302,11 @@ func _physics_process(delta):
 func is_in_air() -> bool:
 	return !character_body.is_on_floor() and is_jumping
 
-func _process(delta):
-	validate_targets()  # Validate targets each frame
-
-	if can_use_energy:
-		if energy_consumption_rate > 0:
-			energy -= energy_consumption_rate * delta
-		else:
-			energy += energy_recovery_rate * delta
-	elif energy < max_energy:
-		energy += energy_recovery_rate * delta
-
 func validate_targets():
-	# Check if the current target is still valid
-	if not is_instance_valid(target):
-		target = null
-		if targets.size() > 0:
-			set_target(targets[0].target)
-		return
-
-	var current_target_index = find_target_index(target)
-	var target_removed = false
-
 	for i in range(targets.size() - 1, -1, -1):
-		var _target = targets[i]
-		if not is_instance_valid(_target.target):
-			GameManager.instance.target_pool.return_object_to_pool(_target)
-			targets.pop_at(i)
-			if i == current_target_index:
-				target_removed = true
-
-	if target_removed:
-		switch_to_next_target(current_target_index)
+		var target_wrapper = targets[i]
+		if not is_instance_valid(target_wrapper.target_node) and not target_wrapper.permanent:
+			remove_target(target_wrapper.target_node)
 
 func switch_to_next_target(removed_index: int):
 	if targets.size() == 0:
@@ -317,7 +314,7 @@ func switch_to_next_target(removed_index: int):
 		return
 
 	var new_target_index = removed_index % targets.size()  # Ensure index is within bounds
-	set_target(targets[new_target_index].target)
+	set_target(targets[new_target_index].target_node)
 
 # 3. Movement Functions
 
@@ -505,11 +502,12 @@ func assemble_character(path: String = ""):
 			var part_instance = part.instantiate()
 			if part_instance is HeadThing:
 				thing_top = part_instance.thing_top
-				# if not aimer is GameplayCamera:
-				# 	# Reparent the aimer to the head.
-				# 	aimer.get_parent().remove_child(aimer)
-				# 	part_instance.add_child(aimer)
-				# 	aimer.position = Vector3.ZERO
+
+				if not aimer is GameplayCamera:
+					# Reparent the aimer to the head.
+					aimer.get_parent().remove_child(aimer)
+					part_instance.add_child(aimer)
+					aimer.position = Vector3.ZERO
 			parts.append(part_instance)
 			# Set any properties on the part, such as color.
 			part_instance.character = self

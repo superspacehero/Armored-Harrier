@@ -39,3 +39,7 @@ func return_object_to_pool(obj: Node):
 	
 	obj.visible = false
 	obj.process_mode = Node.PROCESS_MODE_DISABLED
+
+func remove_object_from_pool(obj: Node):
+	object_pool.erase(obj)
+	obj.queue_free()

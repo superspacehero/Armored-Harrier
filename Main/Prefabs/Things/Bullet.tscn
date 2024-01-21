@@ -82,7 +82,7 @@ draw_pass_1 = SubResource("QuadMesh_2hkar")
 [node name="Bullet Impact" type="GPUParticles3D" parent="."]
 material_override = SubResource("StandardMaterial3D_yxfyb")
 emitting = false
-lifetime = 0.2
+lifetime = 0.1
 one_shot = true
 fixed_fps = 60
 local_coords = true

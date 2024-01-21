@@ -90,8 +90,8 @@ func thing_position(height : float = 0.0):
 
 func die():
 	# Destroy self
-	if !is_queued_for_deletion():
-		print("Dying!")
+	if not is_queued_for_deletion():
+		# print(name + " died.")
 		queue_free()
 
 func move(_direction):

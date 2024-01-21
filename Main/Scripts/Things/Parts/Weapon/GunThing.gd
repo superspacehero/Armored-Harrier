@@ -36,6 +36,7 @@ func _process(delta):
 		else:
 			bullet.rotation = global_rotation
 
+		bullet.shooter = character
 		bullet.damage_amount = _get_damage_amount()
 		bullet.muzzle_flash.get_parent().remove_child(bullet.muzzle_flash)
 		fire_point.add_child(bullet.muzzle_flash)
