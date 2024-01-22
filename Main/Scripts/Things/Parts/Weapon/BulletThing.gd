@@ -44,9 +44,9 @@ func _process(delta):
 
 		if is_instance_valid(muzzle_flash) && muzzle_flash.get_parent():
 			muzzle_flash.get_parent().remove_child(muzzle_flash)
+			self.add_child(muzzle_flash)
 		else:
 			GameManager.instance.bullet_pool.remove_object_from_pool(self)
-		self.add_child(muzzle_flash)
 
 func _physics_process(delta):
 	if bullet.process_mode != Node.PROCESS_MODE_DISABLED:
@@ -63,6 +63,10 @@ func _physics_process(delta):
 			while collider_thing:
 				if is_instance_valid(collider_thing) and collider_thing is GameThing:
 					var game_thing : GameThing = collider_thing as GameThing
-					game_thing.damage(damage_amount, shooter)
+
+					if is_instance_valid(shooter):
+						game_thing.damage(damage_amount, shooter)
+					else:
+						game_thing.damage(damage_amount)
 					break
 				collider_thing = collider_thing.get_parent()

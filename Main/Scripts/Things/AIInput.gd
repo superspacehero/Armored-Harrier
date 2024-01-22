@@ -1,7 +1,7 @@
 extends Node
 class_name AIInput
 
-enum AIStates { NONE, ROAMING, SEARCHING, ATTACKING, DEFENDING, RETREATING }
+enum AIStates { NONE, ROAMING, ATTACKING, DEFENDING, RETREATING }
 enum TargetPriorities { CLOSEST, WEAKEST, STRONGEST, MOST_DANGEROUS, LEAST_DANGEROUS }
 
 # AI controlled character references
@@ -101,8 +101,6 @@ func decide_next_action():
 			current_state = AIStates.ROAMING
 		AIStates.ROAMING:
 			handle_roaming_state()
-		AIStates.SEARCHING:
-			handle_searching_state()
 		AIStates.ATTACKING:
 			handle_attacking_state()
 		AIStates.DEFENDING:
@@ -113,8 +111,8 @@ func decide_next_action():
 	if current_state != previousState:
 		previousState = current_state
 		match current_state:
-			AIStates.SEARCHING:
-				print("SEARCHING")
+			AIStates.ROAMING:
+				print("ROAMING")
 			AIStates.ATTACKING:
 				print("ATTACKING")
 			AIStates.DEFENDING:
@@ -130,10 +128,20 @@ func execute_current_action():
 # State Handlers
 
 func handle_roaming_state():
-	if not is_under_threat():
-		roam_around()
+	if is_under_threat():
+		if is_aggressive():
+			current_state = AIStates.ATTACKING
+		elif is_health_low():
+			current_state = AIStates.RETREATING
+		else:
+			current_state = AIStates.DEFENDING
+	elif is_instance_valid(character.target):
+		if is_aggressive() and defensiveness_factor < character.target.thing_hostility:
+			current_state = AIStates.ATTACKING
+		elif defensiveness_factor > character.target.thing_hostility:
+			current_state = AIStates.DEFENDING
 	else:
-		current_state = AIStates.SEARCHING
+		roam_around()
 
 func roam_around():
 	if get_target_position_distance(false) > movement_threshold and previous_target_position != target_position:
@@ -145,47 +153,42 @@ func roam_around():
 		target_position = select_random_point()
 		wait_timer = randf_range(min_wait_time, max_wait_time)
 
-func handle_searching_state():
-	if is_under_threat():
-		if is_aggresive():
-			current_state = AIStates.ATTACKING
-		elif is_health_low():
-			current_state = AIStates.RETREATING
-		else:
-			current_state = AIStates.DEFENDING
-	else:
-		current_state = AIStates.ROAMING
-
 func handle_attacking_state():
 	if is_under_threat() and is_health_low():
 		current_state = AIStates.RETREATING
 	elif is_under_threat():
-		if is_aggresive():
+		if is_aggressive():
+			engage_target(get_highest_priority_target())
+		else:
+			current_state = AIStates.DEFENDING
+	else:
+		if is_aggressive():
 			engage_target(get_highest_priority_target())
 		else:
 			current_state = AIStates.DEFENDING
 
 func handle_defending_state():
-	if is_under_threat() and is_aggresive():
+	if is_under_threat() and is_aggressive():
 		counterattack_if_possible()
+		take_defensive_position()
 	elif is_under_threat() and is_health_low():
 		current_state = AIStates.RETREATING
 
 func handle_retreating_state():
 	if not is_under_threat() and is_energy_high() and is_health_high():
-		current_state = AIStates.SEARCHING
+		current_state = AIStates.ROAMING
 	elif not is_under_threat() and is_energy_high():
 		current_state = AIStates.ROAMING
 	elif not is_under_threat():
-		current_state = AIStates.SEARCHING
+		current_state = AIStates.ROAMING
 	elif is_under_threat() and is_health_low():
-		current_state = AIStates.RETREATING
+		take_defensive_position()
 	elif is_under_threat():
-		current_state = AIStates.DEFENDING
+		move_to_safe_location()
 
 # Helper Methods
 
-func is_aggresive() -> bool:
+func is_aggressive() -> bool:
 	return aggression_factor >= defensiveness_factor
 
 func is_defensive() -> bool:
@@ -193,7 +196,7 @@ func is_defensive() -> bool:
 
 func is_under_threat() -> bool:
 	for target in character.targets:
-		if is_instance_valid(target) and (target.permanent or target.thing_is_attacking()):
+		if is_instance_valid(target) and (target.permanent or target.target_node.thing_is_attacking()):
 			return true
 	return false
 
@@ -296,6 +299,7 @@ func get_least_dangerous_target():
 
 # Engagement and Movement
 func engage_target(target : TargetableThing):
+	character.find_target(target).permanent = true
 	character.set_target(target)
 	manage_vertical_movement()
 	select_and_use_weapon()  # This now calls engage_or_disengage_weapon
@@ -393,8 +397,8 @@ func take_defensive_position():
 	# Move to a location that is close to the target but far away from other targets
 	var defensive_position = Vector3(0, 0, 0)
 	for target in character.targets:
-		if target != character.target:
-			defensive_position += (get_target_position(target) - character.character_base.global_position)
+		if target.target_node != character.target:
+			defensive_position += (get_target_position(target.target_node) - character.character_base.global_position)
 	defensive_position /= character.targets.size()
 	target_position = character.character_base.global_position + defensive_position
 
@@ -402,7 +406,7 @@ func move_to_safe_location():
 	# Move to a location that is far away from all targets
 	var safe_location = Vector3(0, 0, 0)
 	for target in character.targets:
-		safe_location -= (get_target_position(target) - character.character_base.global_position)
+		safe_location -= (get_target_position(target.target_node) - character.character_base.global_position)
 	safe_location /= character.targets.size()
 	target_position = character.character_base.global_position + safe_location
 

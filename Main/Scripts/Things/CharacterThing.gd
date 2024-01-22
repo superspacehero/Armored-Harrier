@@ -170,7 +170,7 @@ func add_target(target_object: TargetableThing, override_target_requirements: bo
 
 func remove_target(target_object: TargetableThing) -> bool:
 	var target_wrapper = find_target(target_object)
-	if target_wrapper and not target_wrapper.permanent:
+	if target_wrapper and not target_wrapper.permanent or not is_instance_valid(target_object):
 		targets.erase(target_wrapper)
 		target_wrapper.remove()
 
@@ -179,6 +179,15 @@ func remove_target(target_object: TargetableThing) -> bool:
 			target = null
 		return true
 	return false
+
+func remove_target_wrapper(target_wrapper: TargetWrapper):
+	if target_wrapper and not target_wrapper.permanent:
+		targets.erase(target_wrapper)
+		target_wrapper.remove()
+
+		if target == target_wrapper.target_node:
+			switch_to_next_target(find_target_index(target_wrapper.target_node))
+			target = null
 
 var torsos : Array = []
 
@@ -305,8 +314,8 @@ func is_in_air() -> bool:
 func validate_targets():
 	for i in range(targets.size() - 1, -1, -1):
 		var target_wrapper = targets[i]
-		if not is_instance_valid(target_wrapper.target_node) and not target_wrapper.permanent:
-			remove_target(target_wrapper.target_node)
+		if not is_instance_valid(target_wrapper.target_node):
+			remove_target_wrapper(target_wrapper)
 
 func switch_to_next_target(removed_index: int):
 	if targets.size() == 0:
@@ -375,12 +384,14 @@ func rotate_torsos(delta):
 		if target and is_instance_valid(target):
 			# Calculate the direction to the target in the torso's local space
 			var local_target_pos = -character_base.to_local((target.thing_position(0.5)) + (character_base.global_position - torso.global_position))
+			# Calculate the angle to the target based on its y-position relative to the torso's
 			target_angle = atan2(local_target_pos.y, local_target_pos.z)
 		elif aiming > 0:
 			if aimer is GameplayCamera:
 				target_angle = -aimer.rotation.x
 				
-		target_angle = clamp(target_angle, -PI/2, PI/2)
+		var angle_clamp = PI / 4
+		target_angle = clamp(target_angle, -angle_clamp, angle_clamp)
 
 		# Apply the rotation
 		if rotation_time > 0:
